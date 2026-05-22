@@ -88,6 +88,38 @@ For the past fifteen years, an application has been a program running on infrast
 
 ---
 
+## Deploying to Thebes
+
+Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their canisters, generates an ed25519 identity, runs one command. The tool compiles every canister the manifest declares, signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
+
+Install:
+
+```sh
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.0-thebes-deploy/install-thebes-deploy.sh | bash
+```
+
+First-time setup:
+
+```sh
+thebes-deploy identity new alice          # generate an ed25519 identity
+thebes-deploy setup                       # check moc, mops, cargo, mo:core
+thebes-deploy init                        # scaffold a thebes.toml
+```
+
+Then one command compiles every smart contract the manifest declares, installs each on the cluster, uploads the frontend bundles, and verifies the result:
+
+```sh
+thebes-deploy deploy
+```
+
+The tool composes the substrate's three-phase chunked install with a smart-routed HTTP client that picks the least-busy validator for each operation, polls receipts, surfaces install-guard symptoms with file pointers into the deployment-procedures folder, and rotates educational facts about the substrate during slow phases. Canister ids are random one-time draws from a 281-trillion-id range; collisions are impossible by construction; the chosen id is written back to the manifest so re-deploys are stable. Identity is local — one ed25519 seed file per operator at `~/.thebes/identities/<name>.seed`; Memphis, the substrate's end-user identity layer, is a separate surface and is not in the deploy path.
+
+The source is a standalone Rust workspace; eight crates under `tools/thebes-deploy`; eighty-two tests; no dependency on any internal substrate crate. The chain protocol the tool speaks to is public by being a wire format, and the tool is one of several possible clients.
+
+The first public release is `v0.1.0-thebes-deploy`; the binary, the install script, and the source tarball are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
+
+---
+
 ## Verifying the chain
 
 Every block finalised on Thebes carries a post-quantum attestation from a quorum of validators. Each validator signs the block's state root under its own MAYO-2 keypair; the collection of signatures is the chain's certificate of finality. The frontend served from canister 42 exposes the chain's per-block certificate alongside the page it renders, and ships a browser-side verifier that walks the Merkle witness from the served bytes back to the signed state root.
