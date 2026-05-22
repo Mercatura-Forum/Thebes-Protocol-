@@ -8,19 +8,23 @@
 
 ## Live, on-chain
 
-The link below is not a website. It is a smart contract on the Thebes Layer 1 serving its own frontend. The HTML and JavaScript a browser loads are bytes committed into the chain's signed state. No web server, no content-delivery network, no hosting provider sits between the reader and the chain.
+The link below is not a website; it is a smart contract on the Thebes Layer 1 serving its own frontend. The HTML and JavaScript a browser loads are bytes committed into the chain's signed state. No web server, no content-delivery network, no hosting provider sits between the reader and the chain.
 
-**→ [http://194.31.150.154:8090/_/raw/42/index.html](http://194.31.150.154:8090/_/raw/42/index.html)**
+**→ [https://memphis.mercaturaforum.com/_/raw/100/spec.html](https://memphis.mercaturaforum.com/_/raw/100/spec.html)** — the specification, served by canister 100 on the cluster
 
-Open the page. Everything you see is served by canister 42 on the live testnet.
+**→ [https://memphis.mercaturaforum.com/_/raw/100/index.html](https://memphis.mercaturaforum.com/_/raw/100/index.html)** — the announcement page
+
+**→ [http://194.31.150.154:8090/_/raw/42/index.html](http://194.31.150.154:8090/_/raw/42/index.html)** — the original announcement frontend (cid 42)
+
+The spec is the source of truth; everything below is a preview of what it contains.
 
 ---
 
 ## The window we are inside
 
-In 2024 the United States National Institute of Standards and Technology standardised the first post-quantum signature schemes, and in the same year the US Department of Commerce instructed federal systems to migrate off classical cryptography by 2030. In 2023 the Dutch intelligence service, the AIVD, described *harvest-now-decrypt-later* — the practice of intercepting encrypted traffic today in order to decrypt it when a sufficiently large quantum machine arrives — as an active adversary pattern against state and critical-infrastructure communications. CISA, the European Commission, and the government of France have published the same warning in different registers.
+In 2024 the United States National Institute of Standards and Technology standardised the first post-quantum signature schemes; in the same year the US Department of Commerce instructed federal systems to migrate off classical cryptography by 2030. In 2023 the Dutch intelligence service, the AIVD, described *harvest-now-decrypt-later* — the practice of intercepting encrypted traffic today in order to decrypt it when a sufficiently large quantum machine arrives — as an active adversary pattern against state and critical-infrastructure communications. CISA, the European Commission, and the government of France have published the same warning in different registers.
 
-Those notices represent a narrow window. Governments, banks, health systems, and courts are signing records today under elliptic-curve schemes that a future quantum machine is expected to break. A land title, a court ruling, a cross-border payment instruction, a medical record, a diplomatic cable: each is signed now, each is archived, each becomes readable the year the machine arrives unless the signature is produced under a scheme designed to survive it.
+Those notices represent a narrow window. Governments, banks, health systems, and courts are signing records today under elliptic-curve schemes that a future quantum machine is expected to break. A land title, a court ruling, a cross-border payment instruction, a medical record, a diplomatic cable; each is signed now, each is archived, each becomes readable the year the machine arrives unless the signature is produced under a scheme designed to survive it.
 
 > *The integrity of a record is not a one-time event. It is a duration.*
 
@@ -28,23 +32,41 @@ Thebes is built for institutions that must sign records whose integrity must las
 
 ---
 
-## What the chain is
+## The protocol, in eight chapters
 
-Consensus, availability, execution, threshold signing across four cryptographic schemes, a verifiable delay beacon, and graphics-accelerated state — each layer written in-house to fit the one above it. Two years of research and development. Nothing is a shim around somebody else's protocol.
+The specification reads in eight chapters; the cryptography classical and post-quantum; the verified-inference layer; the runtime and its installation pipeline; the smart-contract surface; the subnets the substrate supports. Each chapter below is a preview; the spec page has the full text.
 
-### Nine layers, one tree
+### I. The Substrate
 
-| Layer | What it gives you |
-|---|---|
-| **Consensus** | Pipelined Byzantine agreement, sub-second deterministic finality. No probabilistic confirmations. |
-| **Availability** | Erasure-coded block bodies. The slowest link in the cluster does not become the throughput ceiling. |
-| **Execution** | Smart contracts with compute — logic, memory, and the application's own interface in one executable unit. |
-| **Signing** | Distributed-key signatures across secp256k1, Ed25519, Schnorr, and post-quantum MAYO-2. No validator, server, or company ever holds a key in full. |
-| **Randomness** | Wesolowski verifiable delay beacon. The next leader is unknowable until the clock permits it. |
-| **Acceleration** | Graphics-card-native Merkle hashing and batch signature verification. State commitments measured in tens of milliseconds, not seconds. |
-| **Validators** | Nakamoto-Epoch proof-of-stake. Validator sets rotate epoch-by-epoch through distributed key reshare — no hard fork, no downtime window. |
-| **Scale** | Specialised subnets for specialised work. |
-| **Post-quantum** | Every block's attestation is MAYO-2. No elliptic-curve pairing primitive on the consensus critical path. |
+A Byzantine-fault-tolerant substrate built on a two-chain commit rule; prepare, then commit; the chain advances one block per round in the common case. The leader is chosen by a hybrid verifiable delay function — a Wesolowski VDF whose output is mixed with sorted validator-revealed entropy — so even a purpose-built ASIC cannot predict the next leader faster than the network can observe its emergence. Availability is decoupled from order: erasure-coded block bodies disseminate in parallel with consensus, and the slowest link in the cluster does not become the throughput ceiling. Sub-second deterministic finality; no probabilistic confirmations.
+
+### II. Threshold ECDSA
+
+Cross-chain transactions are signed with threshold ECDSA over the secp256k1 curve. Bitcoin; Ethereum; every chain in the EVM family; every chain that uses secp256k1 at all. A quorum of validators jointly produces a signature whose verification is indistinguishable from a signature produced by a single classical signer; no validator, no server, no operator ever holds the private key in full. Class-group pre-signing — NIM — pushes the online signing cost to a sub-millisecond regime adequate for real cross-border flows.
+
+### III. Threshold Schnorr
+
+For Schnorr-curve chains — the ed25519 family on one side, the secp256k1-taproot family on the other — Thebes implements threshold Schnorr through the FROST family of protocols, adapted to consensus-driven dealing. The same protocol runs over secp256k1 and ed25519 with curve-specific arithmetic injected at the field-operation layer; one substrate covers Solana, XRP, and Bitcoin's taproot output type, alongside any other ed25519- or secp256k1-Schnorr destination.
+
+### IV. Post-Quantum Threshold Signatures
+
+The quorum certificates that finalize every block carry post-quantum signatures over MAYO-2; a multivariate-quadratic signature family submitted to the NIST post-quantum standardization process; the parameter set tuned for the signature-size and verification-cost regime that chain finality requires. The construction is the dual signing stack of the substrate; classical NIM-ECDSA for cross-chain user signatures; MAYO-2 for the chain's own internal consensus certificates. Per-validator MAYO-2 signatures are on the consensus critical path today; threshold assembly is staged behind Silent-VOLE preprocessing improvements.
+
+### V. Verified Inference
+
+Inference is verified by replay, not by signature alone. A smart contract that requests inference receives an output, the output hash, and a compute certificate — a small MAYO-2 signature over the tuple of the model hash, the input hash, the output hash, the execution-environment hash, the timestamp, and the provider identity. The certificate is the commitment; the verification is the replay. Anyone who holds the registered weights and the recorded inputs can reproduce the output bit-for-bit and verify the chain's certificate against it.
+
+### VI. The Runtime
+
+Smart contracts execute inside a WebAssembly runtime built on Wasmtime. The substrate inherits the WebAssembly execution model and the Motoko language from the Internet Computer Protocol; the call surface, the type system, and the lifecycle semantics smart-contract developers in this ecosystem already know are honored at the runtime boundary. The installation pipeline is three-phase and chunked; a contract larger than a single block budget is admitted, sliced, and committed deterministically across validators.
+
+### VII. The Smart Contract Surface
+
+A smart contract receives messages addressed to its identifier; a smart contract sends inter-contract calls to other smart contracts on the same subnet, or, in subnets where outcalls are enabled, to external chains and to HTTP endpoints. A contract is a full program with its own memory, its own persistent state, and the ability to host the application interface its users interact with; the HTML and JavaScript rendered in the user's browser are bytes committed into the chain's signed state. Full-stack development is supported end-to-end; a project ships its backend canisters, its frontend canisters, and its assets through one command.
+
+### VIII. The Subnets
+
+The substrate supports four subnet specializations; each specialization enables a subset of capabilities; each capability has a corresponding chapter above. One binary runs on every subnet; the configuration determines which subsystems initialize and which remain dormant. The application subnet hosts smart contracts whose execution is purely on-chain. The signing subnet adds distributed key generation and threshold signing across every curve the substrate covers. The compute subnet adds the verified-inference path. The storage subnet adds long-lived Merkle-committed state any other subnet can verify.
 
 ---
 
@@ -52,11 +74,11 @@ Consensus, availability, execution, threshold signing across four cryptographic 
 
 A chain cannot be optimal for every job at once. Thebes splits the work into specialised subnets; each chooses its own hardware, quorum, and pace. Cross-subnet messages carry a post-quantum signature any subnet can verify without trusting the sender.
 
-- **Finance** — High-throughput settlement tuned for interbank, non-banking, and cross-border transactions at volumes traditional clearing rails have not matched. Batch verification on the graphics card lifts the ceiling well past single-processor limits.
-- **Enterprise** — Dedicated capacity for regulated institutions. Each tenant's state is isolated; every write is signed into the chain's state root. Committee composition, jurisdictional reach, and retention policy are configurable per subnet instance.
-- **Signing** — Graphics-accelerated threshold signing across every major curve. NIM class-group pre-signing sustains sub-millisecond online signing at volumes adequate for real cross-border flows.
-- **Storage** — Long-lived records and application state, Merkle-committed into the chain's signed state so any other subnet can verify them.
-- **Compute & Inference** — Validators agree on, and sign, the output of a deterministic computation — from a statistical model, a research pipeline, or a foundation-model inference. Signing path live; committee-level execution determinism in testing.
+- **Finance** — high-throughput settlement tuned for interbank, non-banking, and cross-border transactions at volumes traditional clearing rails have not matched; batch verification on the graphics card lifts the ceiling well past single-processor limits.
+- **Enterprise** — dedicated capacity for regulated institutions; each tenant's state is isolated; every write is signed into the chain's state root; committee composition, jurisdictional reach, and retention policy are configurable per subnet instance.
+- **Signing** — graphics-accelerated threshold signing across every major curve; NIM class-group pre-signing sustains sub-millisecond online signing at volumes adequate for real cross-border flows.
+- **Storage** — long-lived records and application state, Merkle-committed into the chain's signed state so any other subnet can verify them.
+- **Compute & Inference** — validators agree on, and sign, the output of a deterministic computation — from a statistical model, a research pipeline, or a foundation-model inference; signing path live; committee-level execution determinism in testing.
 
 ### Sovereignty of the record
 
@@ -90,12 +112,12 @@ For the past fifteen years, an application has been a program running on infrast
 
 ## Deploying to Thebes
 
-Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their canisters, generates an ed25519 identity, runs one command. The tool compiles every canister the manifest declares, signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
+Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their canisters, generates an ed25519 identity, runs one command. The tool compiles every canister the manifest declares — Motoko via `moc`; Rust via `cargo build --target wasm32-unknown-unknown --release` — signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
 
 Install:
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.0-thebes-deploy/install-thebes-deploy.sh | bash
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.1-thebes-deploy/install-thebes-deploy.sh | bash
 ```
 
 First-time setup:
@@ -112,11 +134,27 @@ Then one command compiles every smart contract the manifest declares, installs e
 thebes-deploy deploy
 ```
 
-The tool composes the substrate's three-phase chunked install with a smart-routed HTTP client that picks the least-busy validator for each operation, polls receipts, surfaces install-guard symptoms with file pointers into the deployment-procedures folder, and rotates educational facts about the substrate during slow phases. Canister ids are random one-time draws from a 281-trillion-id range; collisions are impossible by construction; the chosen id is written back to the manifest so re-deploys are stable. Identity is local — one ed25519 seed file per operator at `~/.thebes/identities/<name>.seed`; Memphis, the substrate's end-user identity layer, is a separate surface and is not in the deploy path.
+At the end of a successful deploy, the tool prints the URLs to visit. Frontend canisters become boundary links the operator can open in a browser; backend canisters become identifiers the operator can call through `thebes-deploy call`:
+
+```
+✓ deploy complete
+
+Frontends — open in a browser:
+  portal       cid 174832  https://memphis.mercaturaforum.com/_/raw/174832/index.html
+  marketing    cid 192201  https://memphis.mercaturaforum.com/_/raw/192201/index.html
+
+Backends — call via `thebes-deploy call <name> <method>`:
+  ledger       cid 110447
+  applications cid 138992
+```
+
+Full-stack development is supported end-to-end. A project's smart-contract backend and smart-contract frontend ship from one manifest; the manifest decides which canisters are backends and which are frontends; the deploy tool handles both, in order, in one command.
+
+The tool composes the substrate's three-phase chunked install with a smart-routed HTTP client that picks the least-busy validator for each operation, polls receipts, surfaces install-guard symptoms with file pointers into the deployment-procedures folder, and rotates educational facts about the substrate during slow phases. Canister ids are random one-time draws from a 281-trillion-id range — `cid = "auto"` in the manifest delegates allocation to the tool; the chosen id is written back so re-deploys are stable; collisions with manually-chosen low-range cids are impossible by construction. Identity is local — one ed25519 seed file per operator at `~/.thebes/identities/<name>.seed`; Memphis, the substrate's end-user identity layer, is a separate surface and is not in the deploy path.
 
 The source is a standalone Rust workspace; eight crates under `tools/thebes-deploy`; eighty-two tests; no dependency on any internal substrate crate. The chain protocol the tool speaks to is public by being a wire format, and the tool is one of several possible clients.
 
-The first public release is `v0.1.0-thebes-deploy`; the binary, the install script, and the source tarball are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
+The current release is `v0.1.1-thebes-deploy`; the binary and the install script are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
 
 ---
 
@@ -130,10 +168,10 @@ The verifier is active work — the chain already signs; the browser-side check 
 
 ## Status
 
-- **Testnet** — Four-validator cluster live across the MENA region. Block production sub-second, state roots byte-identical across nodes, canister 42 serving this repository's announcement frontend.
-- **Signing subnet** — Threshold ECDSA, Schnorr, and Ed25519 live. MAYO-2 threshold assembly deferred pending Silent-VOLE preprocess improvements; per-validator MAYO-2 signing is live and on the consensus critical path today.
-- **Enterprise & finance subnets** — Architecture live; first institutional deployments in procurement.
-- **Mainnet** — Coordinated with the first institutional partners. Timeline disclosed to partners under NDA.
+- **Testnet** — four-validator cluster live across the MENA region. Block production sub-second, state roots byte-identical across nodes, canister 100 serving the spec page and canister 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
+- **Signing subnet** — threshold ECDSA, Schnorr, and Ed25519 live. MAYO-2 threshold assembly deferred pending Silent-VOLE preprocess improvements; per-validator MAYO-2 signing is live and on the consensus critical path today.
+- **Enterprise & finance subnets** — architecture live; first institutional deployments in procurement.
+- **Mainnet** — coordinated with the first institutional partners. Timeline disclosed to partners under NDA.
 
 ---
 
