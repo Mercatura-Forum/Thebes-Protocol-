@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Thebes Storefront</title>
+  <!-- The backend smart-contract id is injected at deploy time. For local preview,
+       set it to a deployed backend's id. -->
+  <script>window.BACKEND_CID = "__BACKEND_CID__";</script>
+  <script src="./boundary.js"></script>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="./app.js"></script>
+  <script>window.AppDomain && window.AppDomain.mount(document.getElementById("app"));</script>
+</body>
+</html>

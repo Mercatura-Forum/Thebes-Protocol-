@@ -1,6 +1,6 @@
 # Thebes
 
-**A post-quantum Layer 1 for the infrastructure that will outlive classical cryptography.**
+**The Layer 1 where your whole application lives on-chain — replicated across every node, tamper-proof, and impossible to take down. No servers to breach. No backups to restore.**
 
 > 𓂀
 
@@ -10,13 +10,42 @@
 
 The link below is not a website; it is a smart contract on the Thebes Layer 1 serving its own frontend. The HTML and JavaScript a browser loads are bytes committed into the chain's signed state. No web server, no content-delivery network, no hosting provider sits between the reader and the chain.
 
-**→ [https://memphis.mercaturaforum.com/_/raw/100/spec.html](https://memphis.mercaturaforum.com/_/raw/100/spec.html)** — the specification, served by canister 100 on the cluster
+**→ [https://memphis.mercaturaforum.com/_/raw/100/spec.html](https://memphis.mercaturaforum.com/_/raw/100/spec.html)** — the specification, served by smart contract 100 on the cluster
 
 **→ [https://memphis.mercaturaforum.com/_/raw/100/index.html](https://memphis.mercaturaforum.com/_/raw/100/index.html)** — the announcement page
 
 **→ [http://194.31.150.154:8090/_/raw/42/index.html](http://194.31.150.154:8090/_/raw/42/index.html)** — the original announcement frontend (cid 42)
 
 The spec is the source of truth; everything below is a preview of what it contains.
+
+---
+
+## Build on Thebes
+
+Two audiences, one chain.
+
+### For developers — ship a full app in one command
+
+Your **backend and your frontend both live on the chain**. No servers, no database, no cloud bill, no CI/CD pipeline. Write a smart contract in **Motoko or Rust**, write a frontend, run one command, and get a live URL whose bytes are committed into signed chain state. A *query* reads replicated state; an *update* is finalized by a Byzantine quorum and sealed forever.
+
+```sh
+thebes-deploy deploy        # compiles, installs, uploads the frontend, prints the live URL
+```
+
+- **Start from a working example →** [`examples/`](./examples) — counter, guestbook, to-do, key-value store, and full-stack apps (storefront, restaurant, CRM, ERP), each in **Motoko and Rust**, each compiled in CI.
+- **End-user identity is built in** — your users sign in with a **passkey** (Memphis): no wallets, no seed phrases, no extensions.
+- **One binary, no dependencies** — see [Deploying to Thebes](#deploying-to-thebes).
+
+### For enterprise — infrastructure that cannot be taken down or tampered with
+
+Your application and its data are **replicated across every validator** and **sealed**, append-only, into the chain's signed state. There is no single server to breach, no cloud console to misconfigure, no privileged admin to compromise — the infrastructure *is* a Byzantine-fault-tolerant network. It keeps serving through node failures with **no downtime and nothing to recover**.
+
+- **Replicated, always-on** — every node holds the full state; lose nodes and the network keeps finalizing. Sub-second deterministic finality; state byte-identical across nodes.
+- **No disaster recovery** — there is nothing to back up or restore. The chain is its own continuously-verified backup; a node that falls behind re-syncs from the others automatically.
+- **Tamper-proof** — every write is signed by a Byzantine quorum and sealed into an append-only history. No operator — not even us — can alter or delete a deployed contract or its records.
+- **Unhackable at the infrastructure layer** — no web server, no database, no SSH, no cloud IAM to get wrong; the entire class of attacks that breaches conventional systems does not exist here.
+- **Cross-chain, cross-border** — threshold ECDSA/Schnorr sign Bitcoin, Ethereum, Solana, and XRP natively; a settlement becomes one atomic, self-auditing transaction.
+- **Talk to us →** [mercaturaforum.com](https://mercaturaforum.com).
 
 ---
 
@@ -62,7 +91,7 @@ Smart contracts execute inside a WebAssembly runtime built on Wasmtime. The subs
 
 ### VII. The Smart Contract Surface
 
-A smart contract receives messages addressed to its identifier; a smart contract sends inter-contract calls to other smart contracts on the same subnet, or, in subnets where outcalls are enabled, to external chains and to HTTP endpoints. A contract is a full program with its own memory, its own persistent state, and the ability to host the application interface its users interact with; the HTML and JavaScript rendered in the user's browser are bytes committed into the chain's signed state. Full-stack development is supported end-to-end; a project ships its backend canisters, its frontend canisters, and its assets through one command.
+A smart contract receives messages addressed to its identifier; a smart contract sends inter-contract calls to other smart contracts on the same subnet, or, in subnets where outcalls are enabled, to external chains and to HTTP endpoints. A contract is a full program with its own memory, its own persistent state, and the ability to host the application interface its users interact with; the HTML and JavaScript rendered in the user's browser are bytes committed into the chain's signed state. Full-stack development is supported end-to-end; a project ships its backend smart contracts, its frontend smart contracts, and its assets through one command.
 
 ### VIII. The Subnets
 
@@ -112,12 +141,12 @@ For the past fifteen years, an application has been a program running on infrast
 
 ## Deploying to Thebes
 
-Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their canisters, generates an ed25519 identity, runs one command. The tool compiles every canister the manifest declares — Motoko via `moc`; Rust via `cargo build --target wasm32-unknown-unknown --release` — signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
+Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their smart contracts, generates an ed25519 identity, runs one command. The tool compiles every smart contract the manifest declares — Motoko via `moc`; Rust via `cargo build --target wasm32-unknown-unknown --release` — signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
 
 Install:
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.1-thebes-deploy/install-thebes-deploy.sh | bash
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.3-thebes-deploy/install-thebes-deploy.sh | bash
 ```
 
 First-time setup:
@@ -134,7 +163,7 @@ Then one command compiles every smart contract the manifest declares, installs e
 thebes-deploy deploy
 ```
 
-At the end of a successful deploy, the tool prints the URLs to visit. Frontend canisters become boundary links the operator can open in a browser; backend canisters become identifiers the operator can call through `thebes-deploy call`:
+At the end of a successful deploy, the tool prints the URLs to visit. Frontend smart contracts become boundary links the operator can open in a browser; backend smart contracts become identifiers the operator can call through `thebes-deploy call`:
 
 ```
 ✓ deploy complete
@@ -148,19 +177,19 @@ Backends — call via `thebes-deploy call <name> <method>`:
   applications cid 138992
 ```
 
-Full-stack development is supported end-to-end. A project's smart-contract backend and smart-contract frontend ship from one manifest; the manifest decides which canisters are backends and which are frontends; the deploy tool handles both, in order, in one command.
+Full-stack development is supported end-to-end. A project's smart-contract backend and smart-contract frontend ship from one manifest; the manifest decides which smart contracts are backends and which are frontends; the deploy tool handles both, in order, in one command. For a worked walkthrough — manifest, build, deploy, and calling a live contract — see **[docs/deploying.md](docs/deploying.md)**.
 
-The tool composes the substrate's three-phase chunked install with a smart-routed HTTP client that picks the least-busy validator for each operation, polls receipts, surfaces install-guard symptoms with file pointers into the deployment-procedures folder, and rotates educational facts about the substrate during slow phases. Canister ids are random one-time draws from a 281-trillion-id range — `cid = "auto"` in the manifest delegates allocation to the tool; the chosen id is written back so re-deploys are stable; collisions with manually-chosen low-range cids are impossible by construction. Identity is local — one ed25519 seed file per operator at `~/.thebes/identities/<name>.seed`; Memphis, the substrate's end-user identity layer, is a separate surface and is not in the deploy path.
+The tool composes the substrate's three-phase chunked install with a smart-routed HTTP client that picks the least-busy validator for each operation, polls receipts, surfaces install-guard symptoms with file pointers into the deployment-procedures folder, and rotates educational facts about the substrate during slow phases. Smart contract ids are random one-time draws from a 281-trillion-id range — `cid = "auto"` in the manifest delegates allocation to the tool; the chosen id is written back so re-deploys are stable; collisions with manually-chosen low-range cids are impossible by construction. Identity is local — one ed25519 seed file per operator at `~/.thebes/identities/<name>.seed`; Memphis, the substrate's end-user identity layer, is a separate surface and is not in the deploy path.
 
 The source is a standalone Rust workspace; eight crates under `tools/thebes-deploy`; eighty-two tests; no dependency on any internal substrate crate. The chain protocol the tool speaks to is public by being a wire format, and the tool is one of several possible clients.
 
-The current release is `v0.1.1-thebes-deploy`; the binary and the install script are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
+The current release is `v0.1.3-thebes-deploy`; the binary, the install script, and a source tarball are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
 
 ---
 
 ## Verifying the chain
 
-Every block finalised on Thebes carries a post-quantum attestation from a quorum of validators. Each validator signs the block's state root under its own MAYO-2 keypair; the collection of signatures is the chain's certificate of finality. The frontend served from canister 42 exposes the chain's per-block certificate alongside the page it renders, and ships a browser-side verifier that walks the Merkle witness from the served bytes back to the signed state root.
+Every block finalised on Thebes carries a post-quantum attestation from a quorum of validators. Each validator signs the block's state root under its own MAYO-2 keypair; the collection of signatures is the chain's certificate of finality. The frontend served from smart contract 42 exposes the chain's per-block certificate alongside the page it renders, and ships a browser-side verifier that walks the Merkle witness from the served bytes back to the signed state root.
 
 The verifier is active work — the chain already signs; the browser-side check of the per-validator MAYO-2 quorum is the last piece of the trust path, and its final step lands in the next release.
 
@@ -168,7 +197,7 @@ The verifier is active work — the chain already signs; the browser-side check 
 
 ## Status
 
-- **Testnet** — four-validator cluster live across the MENA region. Block production sub-second, state roots byte-identical across nodes, canister 100 serving the spec page and canister 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
+- **Testnet** — four-validator cluster live across the MENA region. Block production sub-second, state roots byte-identical across nodes, smart contract 100 serving the spec page and smart contract 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
 - **Signing subnet** — threshold ECDSA, Schnorr, and Ed25519 live. MAYO-2 threshold assembly deferred pending Silent-VOLE preprocess improvements; per-validator MAYO-2 signing is live and on the consensus critical path today.
 - **Enterprise & finance subnets** — architecture live; first institutional deployments in procurement.
 - **Mainnet** — coordinated with the first institutional partners. Timeline disclosed to partners under NDA.

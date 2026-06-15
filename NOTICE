@@ -1,0 +1,19 @@
+Thebes Protocol — examples & developer tooling
+Copyright (c) 2026 Mercatura Forum
+
+This repository contains example smart contracts and developer tooling for the
+Thebes Layer 1. The examples are written in Motoko and Rust and build on the
+Internet Computer Canister Development Kit (IC CDK):
+
+  • ic-cdk (Rust)        — © DFINITY Foundation, Apache-2.0
+                            https://github.com/dfinity/cdk-rs
+  • Motoko base/runtime  — © DFINITY Foundation, Apache-2.0
+                            https://github.com/dfinity/motoko
+
+The IC CDK is the work of the DFINITY Foundation and the Internet Computer
+community. Thebes smart contracts are source-compatible with the IC CDK
+programming model; we gratefully acknowledge that foundation. Thebes itself is a
+distinct, post-quantum, Byzantine-fault-tolerant Layer 1 — see the README.
+
+Nothing in this repository contains Thebes chain data, validator binaries, or
+node keys; it is examples, tooling, and documentation only.

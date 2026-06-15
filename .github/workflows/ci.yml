@@ -1,0 +1,59 @@
+name: examples-compile
+
+# Every example must compile — Motoko with moc, Rust to wasm32 — so nothing rots.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  motoko:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: moc --check every example (with mo:core via mops)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          # mo:core packages via mops. (mops' own `toolchain` command shells out
+          # to dfx, which isn't on the runner — so we install moc directly below
+          # and use mops only to resolve the package source paths.)
+          npm i -g ic-mops
+          mops install
+          # Public moc binary, downloaded straight from the Motoko releases.
+          TAG="$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/dfinity/motoko/releases/latest \
+            | grep -oP '"tag_name":\s*"\K[^"]+')"
+          echo "moc $TAG"
+          curl -fsSL "https://github.com/dfinity/motoko/releases/download/${TAG}/motoko-Linux-x86_64-${TAG}.tar.gz" -o /tmp/moc.tar.gz
+          # extract only the moc binary; skip the "./" archive entry whose
+          # utime/chmod the CI sandbox refuses (tar would otherwise exit 2).
+          tar xzf /tmp/moc.tar.gz -C /tmp --no-same-owner --no-same-permissions ./moc
+          MOC=/tmp/moc
+          "$MOC" --version
+          SRCS="$(mops sources)"
+          fail=0
+          for f in $(find examples -path '*/motoko/*.mo'); do
+            echo "== moc --check $f =="
+            "$MOC" $SRCS --check "$f" || fail=1
+          done
+          exit $fail
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: cargo build every Rust example to wasm32
+        run: |
+          set -e
+          for d in $(find examples -name Cargo.toml -path '*/rust/*' -printf '%h\n'); do
+            echo "== cargo build $d =="
+            (cd "$d" && cargo build --target wasm32-unknown-unknown --release)
+          done
