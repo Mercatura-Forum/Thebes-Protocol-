@@ -18,6 +18,11 @@ finalized by a BFT quorum.
 | [`e-commerce`](./e-commerce) | **full-stack storefront** — products, cart, orders, served on-chain | Motoko + frontend |
 | [`icrc-me`](./icrc-me) | **the Thebes token standard** — full ICRC-1/2/3/10 ledger | Motoko |
 
+Every example here compiles in CI. `counter` and the `e-commerce` storefront are
+also **deployed and exercised live on the testnet** end-to-end with
+`thebes-deploy` — `increment`/`get` and `placeOrder`/`myOrders` both finalize
+through the validator quorum and read back from chain state.
+
 _More on the way: more full-stack apps (restaurant, CRM, ERP) with rich on-chain
 frontends matching the Thebes homepage._
 
