@@ -16,9 +16,10 @@ finalized by a BFT quorum.
 | [`todo`](./todo) | keyed map — add, toggle done, list | Motoko · Rust |
 | [`kv-store`](./kv-store) | set / get / delete / list keys | Motoko · Rust |
 | [`e-commerce`](./e-commerce) | **full-stack storefront** — products, cart, orders, served on-chain | Motoko + frontend |
+| [`icrc-me`](./icrc-me) | **the Thebes token standard** — full ICRC-1/2/3/10 ledger | Motoko |
 
-_More on the way: the **ICRC-ME** token standard (Motoko), and more full-stack apps
-(restaurant, CRM, ERP) with rich on-chain frontends matching the Thebes homepage._
+_More on the way: more full-stack apps (restaurant, CRM, ERP) with rich on-chain
+frontends matching the Thebes homepage._
 
 > **Authoring note (Thebes):** a private helper that `await`s another contract must
 > be **`async*`**, not `async` — `async*` inlines into the caller so its post-`await`
