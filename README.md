@@ -177,7 +177,7 @@ Backends — call via `thebes-deploy call <name> <method>`:
   applications cid 138992
 ```
 
-Full-stack development is supported end-to-end. A project's smart-contract backend and smart-contract frontend ship from one manifest; the manifest decides which smart contracts are backends and which are frontends; the deploy tool handles both, in order, in one command.
+Full-stack development is supported end-to-end. A project's smart-contract backend and smart-contract frontend ship from one manifest; the manifest decides which smart contracts are backends and which are frontends; the deploy tool handles both, in order, in one command. For a worked walkthrough — manifest, build, deploy, and calling a live contract — see **[docs/deploying.md](docs/deploying.md)**.
 
 The tool composes the substrate's three-phase chunked install with a smart-routed HTTP client that picks the least-busy validator for each operation, polls receipts, surfaces install-guard symptoms with file pointers into the deployment-procedures folder, and rotates educational facts about the substrate during slow phases. Smart contract ids are random one-time draws from a 281-trillion-id range — `cid = "auto"` in the manifest delegates allocation to the tool; the chosen id is written back so re-deploys are stable; collisions with manually-chosen low-range cids are impossible by construction. Identity is local — one ed25519 seed file per operator at `~/.thebes/identities/<name>.seed`; Memphis, the substrate's end-user identity layer, is a separate surface and is not in the deploy path.
 

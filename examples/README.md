@@ -43,6 +43,8 @@ cargo build --target wasm32-unknown-unknown --release
 
 ## Deploy one
 
+> Full walkthrough — manifest, build, deploy, calling a live contract: **[../docs/deploying.md](../docs/deploying.md)**.
+
 Deploy to the testnet with [`thebes-deploy`](../README.md): write a `thebes.toml`,
 generate an identity, run `thebes-deploy deploy`. The tool compiles the contract,
 signs the install, routes the chunks across the validators, and prints the live
