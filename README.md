@@ -20,6 +20,32 @@ The spec is the source of truth; everything below is a preview of what it contai
 
 ---
 
+## Build on Thebes
+
+Two audiences, one chain.
+
+### For developers — ship a full app in one command
+
+Your **backend and your frontend both live on the chain**. No servers, no database, no cloud bill, no CI/CD pipeline. Write a smart contract in **Motoko or Rust**, write a frontend, run one command, and get a live URL whose bytes are committed into signed chain state. A *query* reads replicated state; an *update* is finalized by a Byzantine quorum and sealed forever.
+
+```sh
+thebes-deploy deploy        # compiles, installs, uploads the frontend, prints the live URL
+```
+
+- **Start from a working example →** [`examples/`](./examples) — counter, guestbook, to-do, key-value store, and full-stack apps (storefront, restaurant, CRM, ERP), each in **Motoko and Rust**, each compiled in CI.
+- **End-user identity is built in** — your users sign in with a **passkey** (Memphis): no wallets, no seed phrases, no extensions.
+- **One binary, no dependencies** — see [Deploying to Thebes](#deploying-to-thebes).
+
+### For enterprise — records that outlive classical cryptography
+
+Every block is signed, *on the consensus critical path*, under a **post-quantum** certificate (MAYO-2) — a record signed today stays verifiable after a quantum machine exists. State is **replicated** across a Byzantine-fault-tolerant validator set, **sealed** append-only into the chain's signed history, and **sovereign** — run a subnet whose committee is resident in your jurisdiction, so data localisation is enforced by cryptography, not a cloud provider's promise.
+
+- **Replication · immutability · BFT** — sub-second deterministic finality, state roots byte-identical across nodes, no operator able to alter or remove a deployed contract.
+- **Cross-chain, cross-border** — threshold ECDSA/Schnorr sign Bitcoin, Ethereum, Solana, and XRP natively; a cross-border settlement becomes one atomic, self-auditing transaction.
+- **Talk to us →** [mercaturaforum.com](https://mercaturaforum.com).
+
+---
+
 ## The window we are inside
 
 In 2024 the United States National Institute of Standards and Technology standardised the first post-quantum signature schemes; in the same year the US Department of Commerce instructed federal systems to migrate off classical cryptography by 2030. In 2023 the Dutch intelligence service, the AIVD, described *harvest-now-decrypt-later* — the practice of intercepting encrypted traffic today in order to decrypt it when a sufficiently large quantum machine arrives — as an active adversary pattern against state and critical-infrastructure communications. CISA, the European Commission, and the government of France have published the same warning in different registers.
