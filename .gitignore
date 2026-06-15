@@ -1,0 +1,7 @@
+# Rust build output
+target/
+**/target/
+# Motoko package cache
+.mops/
+# misc
+.DS_Store

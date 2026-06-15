@@ -1,0 +1,17 @@
+[package]
+name = "counter"
+version = "0.1.0"
+edition = "2021"
+description = "Counter — the smallest complete Thebes smart contract (Rust)."
+
+[lib]
+crate-type = ["cdylib"]
+
+# ic-cdk + candid are the Internet Computer Rust CDK, authored by DFINITY — see /NOTICE.
+[dependencies]
+ic-cdk = "0.13"
+candid = "0.10"
+
+[profile.release]
+opt-level = "s"
+lto = true

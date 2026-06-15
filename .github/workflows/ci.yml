@@ -1,0 +1,46 @@
+name: examples-compile
+
+# Every example must compile — Motoko with moc, Rust to wasm32 — so nothing rots.
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  motoko:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install moc + mops
+        run: |
+          npm i -g ic-mops
+          mocv use latest || mops toolchain init || true
+          npx --yes ic-mops install
+      - name: moc --check every example (with mo:core via mops)
+        run: |
+          set -e
+          SRCS="$(mops sources 2>/dev/null || true)"
+          fail=0
+          for f in $(find examples -path '*/motoko/*.mo'); do
+            echo "== moc --check $f =="
+            $(mops toolchain bin moc 2>/dev/null || echo moc) $SRCS --check "$f" || fail=1
+          done
+          exit $fail
+
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: cargo build every Rust example to wasm32
+        run: |
+          set -e
+          for d in $(find examples -name Cargo.toml -path '*/rust/*' -printf '%h\n'); do
+            echo "== cargo build $d =="
+            (cd "$d" && cargo build --target wasm32-unknown-unknown --release)
+          done

@@ -1,0 +1,4 @@
+# Motoko package set for the examples. `core` is the modern Motoko base library.
+# CI resolves these with `mops install` + `moc $(mops sources) --check`.
+[dependencies]
+core = "2.4.0"
