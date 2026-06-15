@@ -8,13 +8,15 @@
 
 ## Live, on-chain
 
-The link below is not a website; it is a smart contract on the Thebes Layer 1 serving its own frontend. The HTML and JavaScript a browser loads are bytes committed into the chain's signed state. No web server, no content-delivery network, no hosting provider sits between the reader and the chain.
+The links below are not websites; each is a smart contract on the Thebes Layer 1 serving its own frontend. The HTML and JavaScript a browser loads are bytes committed into the chain's signed state. No web server, no content-delivery network, no hosting provider sits between the reader and the chain.
 
-**→ [https://memphis.mercaturaforum.com/_/raw/100/spec.html](https://memphis.mercaturaforum.com/_/raw/100/spec.html)** — the specification, served by smart contract 100 on the cluster
+**→ [The homepage](https://memphis.mercaturaforum.com/_/raw/129525575222625/index.html)** — Thebes, served by its own smart contract on the cluster
 
-**→ [https://memphis.mercaturaforum.com/_/raw/100/index.html](https://memphis.mercaturaforum.com/_/raw/100/index.html)** — the announcement page
+**→ [The technical specification](https://memphis.mercaturaforum.com/_/raw/129525575222625/spec.html)** — the source of truth, also served on-chain
 
-**→ [http://194.31.150.154:8090/_/raw/42/index.html](http://194.31.150.154:8090/_/raw/42/index.html)** — the original announcement frontend (cid 42)
+**→ [The Thebes IDE](https://memphis.mercaturaforum.com/_/raw/129525575222700/index.html)** — write, compile, and deploy a smart contract from the browser
+
+**→ [A live storefront](https://memphis.mercaturaforum.com/_/raw/61779479616533/index.html)** — the [`examples/e-commerce`](examples/e-commerce) app running on-chain: catalog, cart, and orders, all served and settled by the cluster
 
 The spec is the source of truth; everything below is a preview of what it contains.
 
