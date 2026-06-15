@@ -15,22 +15,24 @@ jobs:
         with:
           node-version: 20
       - name: moc --check every example (with mo:core via mops)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -e
+          # mo:core packages via mops. (mops' own `toolchain` command shells out
+          # to dfx, which isn't on the runner — so we install moc directly below
+          # and use mops only to resolve the package source paths.)
           npm i -g ic-mops
-          mops toolchain init          # installs moc + wasmtime
-          mops install                 # fetch mo:core
-          # Resolve the moc binary robustly. `mops toolchain bin moc` can print
-          # an advisory line as well as the path, so extract the absolute path;
-          # fall back to mops' DFX_MOC_PATH wrapper, then PATH.
-          MOC=""
-          for cand in \
-            "$(mops toolchain bin moc 2>/dev/null | grep -Eo '/[^ ]*moc' | head -1)" \
-            "$DFX_MOC_PATH" moc-wrapper moc; do
-            if [ -n "$cand" ] && command -v "$cand" >/dev/null 2>&1; then MOC="$cand"; break; fi
-          done
-          [ -n "$MOC" ] || { echo "could not locate moc"; exit 1; }
-          echo "using moc: $MOC"; "$MOC" --version
+          mops install
+          # Public moc binary, downloaded straight from the Motoko releases.
+          TAG="$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" \
+            https://api.github.com/repos/dfinity/motoko/releases/latest \
+            | grep -oP '"tag_name":\s*"\K[^"]+')"
+          echo "moc $TAG"
+          curl -fsSL "https://github.com/dfinity/motoko/releases/download/${TAG}/motoko-Linux-x86_64-${TAG}.tar.gz" -o /tmp/moc.tar.gz
+          tar xzf /tmp/moc.tar.gz -C /tmp
+          MOC=/tmp/moc
+          "$MOC" --version
           SRCS="$(mops sources)"
           fail=0
           for f in $(find examples -path '*/motoko/*.mo'); do
