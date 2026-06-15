@@ -1,6 +1,6 @@
 # Thebes
 
-**A post-quantum Layer 1 for the infrastructure that will outlive classical cryptography.**
+**The Layer 1 where your whole application lives on-chain — replicated across every node, tamper-proof, and impossible to take down. No servers to breach. No backups to restore.**
 
 > 𓂀
 
@@ -36,12 +36,15 @@ thebes-deploy deploy        # compiles, installs, uploads the frontend, prints t
 - **End-user identity is built in** — your users sign in with a **passkey** (Memphis): no wallets, no seed phrases, no extensions.
 - **One binary, no dependencies** — see [Deploying to Thebes](#deploying-to-thebes).
 
-### For enterprise — records that outlive classical cryptography
+### For enterprise — infrastructure that cannot be taken down or tampered with
 
-Every block is signed, *on the consensus critical path*, under a **post-quantum** certificate (MAYO-2) — a record signed today stays verifiable after a quantum machine exists. State is **replicated** across a Byzantine-fault-tolerant validator set, **sealed** append-only into the chain's signed history, and **sovereign** — run a subnet whose committee is resident in your jurisdiction, so data localisation is enforced by cryptography, not a cloud provider's promise.
+Your application and its data are **replicated across every validator** and **sealed**, append-only, into the chain's signed state. There is no single server to breach, no cloud console to misconfigure, no privileged admin to compromise — the infrastructure *is* a Byzantine-fault-tolerant network. It keeps serving through node failures with **no downtime and nothing to recover**.
 
-- **Replication · immutability · BFT** — sub-second deterministic finality, state roots byte-identical across nodes, no operator able to alter or remove a deployed contract.
-- **Cross-chain, cross-border** — threshold ECDSA/Schnorr sign Bitcoin, Ethereum, Solana, and XRP natively; a cross-border settlement becomes one atomic, self-auditing transaction.
+- **Replicated, always-on** — every node holds the full state; lose nodes and the network keeps finalizing. Sub-second deterministic finality; state byte-identical across nodes.
+- **No disaster recovery** — there is nothing to back up or restore. The chain is its own continuously-verified backup; a node that falls behind re-syncs from the others automatically.
+- **Tamper-proof** — every write is signed by a Byzantine quorum and sealed into an append-only history. No operator — not even us — can alter or delete a deployed contract or its records.
+- **Unhackable at the infrastructure layer** — no web server, no database, no SSH, no cloud IAM to get wrong; the entire class of attacks that breaches conventional systems does not exist here.
+- **Cross-chain, cross-border** — threshold ECDSA/Schnorr sign Bitcoin, Ethereum, Solana, and XRP natively; a settlement becomes one atomic, self-auditing transaction.
 - **Talk to us →** [mercaturaforum.com](https://mercaturaforum.com).
 
 ---
