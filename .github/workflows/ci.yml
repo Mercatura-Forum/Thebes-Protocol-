@@ -30,7 +30,9 @@ jobs:
             | grep -oP '"tag_name":\s*"\K[^"]+')"
           echo "moc $TAG"
           curl -fsSL "https://github.com/dfinity/motoko/releases/download/${TAG}/motoko-Linux-x86_64-${TAG}.tar.gz" -o /tmp/moc.tar.gz
-          tar xzf /tmp/moc.tar.gz -C /tmp
+          # extract only the moc binary; skip the "./" archive entry whose
+          # utime/chmod the CI sandbox refuses (tar would otherwise exit 2).
+          tar xzf /tmp/moc.tar.gz -C /tmp --no-same-owner --no-same-permissions ./moc
           MOC=/tmp/moc
           "$MOC" --version
           SRCS="$(mops sources)"

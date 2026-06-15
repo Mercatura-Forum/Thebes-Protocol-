@@ -23,6 +23,11 @@ also **deployed and exercised live on the testnet** end-to-end with
 `thebes-deploy` — `increment`/`get` and `placeOrder`/`myOrders` both finalize
 through the validator quorum and read back from chain state.
 
+**Each example has its own README** with its full interface, a `thebes.toml` to
+deploy it, and how to connect to its API three ways — the `thebes-deploy` CLI,
+the `EgyptBoundary` JS SDK for frontends, and raw HTTP. Open any example folder
+above.
+
 _More on the way: more full-stack apps (restaurant, CRM, ERP) with rich on-chain
 frontends matching the Thebes homepage._
 

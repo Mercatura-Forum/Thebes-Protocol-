@@ -11,6 +11,39 @@ replicated across the validator set, and sealed into the chain's history.
 
 Deploy with `thebes-deploy` (backend + frontend from one manifest → live URL).
 
+## Interface
+
+| Method | Kind | Args | Returns | Notes |
+|---|---|---|---|---|
+| `products` | query | — | `vec record { id; name; price; emoji; desc }` | the seeded catalog |
+| `placeOrder` | update | `vec nat` ids, `vec nat` qtys | `nat` (order id) | keyed to the buyer, finalized by quorum |
+| `myOrders` | shared query | — | `vec record { id; total; itemCount }` | the caller's own orders |
+
+## Connect to the API
+
+**From the CLI:**
+
+```sh
+thebes-deploy query storefront products
+thebes-deploy call  storefront placeOrder --arg '(vec {0:nat; 1:nat}, vec {2:nat; 1:nat})'  # → (0 : nat)
+thebes-deploy query storefront myOrders
+# → (vec { record { id = 0; total = 17_440; itemCount = 3 } })
+```
+
+**From the frontend** (`frontend/app.js`, via `window.EgyptBoundary` +
+`window.BACKEND_CID` injected at deploy):
+
+```js
+const cid = window.BACKEND_CID, api = window.EgyptBoundary;
+
+const catalog = await api.query(cid, "products", "()");
+await api.call(cid, "placeOrder", "(vec {0:nat; 1:nat}, vec {2:nat; 1:nat})");
+const mine = await api.query(cid, "myOrders", "()");   // caller-keyed
+```
+
+`myOrders` is caller-keyed: a buyer only ever sees their own orders, identified
+by their signed-in passkey principal.
+
 ## Frontend variants
 
 - **`frontend/`** — the proven vanilla build (works today: catalog, cart, passkey
