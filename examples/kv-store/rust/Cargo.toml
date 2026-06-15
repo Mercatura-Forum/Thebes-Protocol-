@@ -1,0 +1,17 @@
+[package]
+name = "kv_store"
+version = "0.1.0"
+edition = "2021"
+description = "Key-value store — set, get, delete, keys (Rust)."
+
+[lib]
+crate-type = ["cdylib"]
+
+# ic-cdk + candid: the Internet Computer Rust CDK, authored by DFINITY — see /NOTICE.
+[dependencies]
+ic-cdk = "0.13"
+candid = "0.10"
+
+[profile.release]
+opt-level = "s"
+lto = true

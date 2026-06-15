@@ -13,10 +13,15 @@ finalized by a BFT quorum.
 |---|---|---|
 | [`counter`](./counter) | the smallest complete contract — one update, one query | Motoko · Rust |
 | [`guestbook`](./guestbook) | append-only list keyed by the caller; query the whole list | Motoko · Rust |
+| [`todo`](./todo) | keyed map — add, toggle done, list | Motoko · Rust |
+| [`kv-store`](./kv-store) | set / get / delete / list keys | Motoko · Rust |
 
-_More on the way: to-do, an ICRC-style token + the ICRC-ME standard, a key-value
-store, and full-stack apps (storefront, bookings, a restaurant) that serve their
-own frontend on-chain._
+_More on the way: an ICRC-style token + the ICRC-ME standard, and full-stack apps
+(storefront, bookings, a restaurant) that serve their own frontend on-chain._
+
+> **Authoring note (Thebes):** a private helper that `await`s another contract must
+> be **`async*`**, not `async` — `async*` inlines into the caller so its post-`await`
+> mutations commit correctly. (Plain `async` helpers are a known engine pitfall.)
 
 ## Build one
 
