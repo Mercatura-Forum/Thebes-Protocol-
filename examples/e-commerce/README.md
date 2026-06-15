@@ -11,5 +11,13 @@ replicated across the validator set, and sealed into the chain's history.
 
 Deploy with `thebes-deploy` (backend + frontend from one manifest → live URL).
 
-> The frontend here is the proven vanilla build. A 3D/visually-rich variant matching
-> the Thebes homepage aesthetic is in progress.
+## Frontend variants
+
+- **`frontend/`** — the proven vanilla build (works today: catalog, cart, passkey
+  checkout, MyOrders, all wired to the backend).
+- **3D flagship (approved, in build): "Order → Block forge"** — a scroll-scrubbed
+  Three.js hero in the Thebes dark cyan→purple system: a product glyph flows into a
+  lattice, four validator node-lights sign it in lockstep (the BFT quorum), and it
+  crystallizes into a sealed block dropping into an append-only column — the checkout
+  *is* consensus. Built under the hero3d discipline (build → rig → design-audit →
+  look-review) before it ships.
