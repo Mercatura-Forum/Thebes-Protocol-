@@ -146,7 +146,7 @@ Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; 
 Install:
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.1-thebes-deploy/install-thebes-deploy.sh | bash
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.3-thebes-deploy/install-thebes-deploy.sh | bash
 ```
 
 First-time setup:
@@ -183,7 +183,7 @@ The tool composes the substrate's three-phase chunked install with a smart-route
 
 The source is a standalone Rust workspace; eight crates under `tools/thebes-deploy`; eighty-two tests; no dependency on any internal substrate crate. The chain protocol the tool speaks to is public by being a wire format, and the tool is one of several possible clients.
 
-The current release is `v0.1.1-thebes-deploy`; the binary and the install script are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
+The current release is `v0.1.3-thebes-deploy`; the binary, the install script, and a source tarball are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
 
 ---
 
