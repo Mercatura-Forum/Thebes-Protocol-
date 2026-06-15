@@ -14,19 +14,28 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install moc + mops
-        run: |
-          npm i -g ic-mops
-          mocv use latest || mops toolchain init || true
-          npx --yes ic-mops install
       - name: moc --check every example (with mo:core via mops)
         run: |
           set -e
-          SRCS="$(mops sources 2>/dev/null || true)"
+          npm i -g ic-mops
+          mops toolchain init          # installs moc + wasmtime
+          mops install                 # fetch mo:core
+          # Resolve the moc binary robustly. `mops toolchain bin moc` can print
+          # an advisory line as well as the path, so extract the absolute path;
+          # fall back to mops' DFX_MOC_PATH wrapper, then PATH.
+          MOC=""
+          for cand in \
+            "$(mops toolchain bin moc 2>/dev/null | grep -Eo '/[^ ]*moc' | head -1)" \
+            "$DFX_MOC_PATH" moc-wrapper moc; do
+            if [ -n "$cand" ] && command -v "$cand" >/dev/null 2>&1; then MOC="$cand"; break; fi
+          done
+          [ -n "$MOC" ] || { echo "could not locate moc"; exit 1; }
+          echo "using moc: $MOC"; "$MOC" --version
+          SRCS="$(mops sources)"
           fail=0
           for f in $(find examples -path '*/motoko/*.mo'); do
             echo "== moc --check $f =="
-            $(mops toolchain bin moc 2>/dev/null || echo moc) $SRCS --check "$f" || fail=1
+            "$MOC" $SRCS --check "$f" || fail=1
           done
           exit $fail
 
