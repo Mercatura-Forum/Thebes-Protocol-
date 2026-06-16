@@ -5,3 +5,11 @@ target/
 .mops/
 # misc
 .DS_Store
+
+# React example frontends
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.vite/
+*.tsbuildinfo

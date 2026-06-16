@@ -9,31 +9,55 @@ is sealed into the chain's signed, append-only history — there is no database 
 no server. A *query* reads replicated state; an *update* mutates it and is
 finalized by a BFT quorum.
 
+### Core contracts
+
+The primitives — each written in **both Motoko and Rust** and compiled in CI.
+
 | Example | What it shows | Languages |
 |---|---|---|
 | [`counter`](./counter) | the smallest complete contract — one update, one query | Motoko · Rust |
 | [`guestbook`](./guestbook) | append-only list keyed by the caller; query the whole list | Motoko · Rust |
 | [`todo`](./todo) | keyed map — add, toggle done, list | Motoko · Rust |
 | [`kv-store`](./kv-store) | set / get / delete / list keys | Motoko · Rust |
-| [`e-commerce`](./e-commerce) | **full-stack storefront** — products, cart, orders, served on-chain | Motoko + frontend |
 | [`icrc-me`](./icrc-me) | **the Thebes token standard** — full ICRC-1/2/3/10 ledger | Motoko |
+
+### Full-stack apps
+
+A suite of complete apps — a Motoko backend contract plus a frontend served from
+the chain. Each one carries a **real correctness guard** (the kind a production
+app actually needs) and a `*View` read surface the frontend decodes directly.
+
+| Example | What it shows | The guard it demonstrates |
+|---|---|---|
+| [`e-commerce`](./e-commerce) | storefront — products, cart, orders | atomic checkout |
+| [`store`](./store) | richer storefront with on-chain product photos | atomic stock decrement |
+| [`chat`](./chat) | social room — profiles, avatars, Memphis-authenticated posts | append-only bounded log |
+| [`finance`](./finance) | personal ledger — accounts, transactions, budgets, receipts | no-overdraft + balance oracle |
+| [`booking`](./booking) | reservations — listings, time slots | no double-booking (atomic) |
+| [`restaurant`](./restaurant) | menu + customer orders + kitchen queue | forward-only order lifecycle |
+| [`crm`](./crm) | sales pipeline — contacts, deals, activity log | forward-only pipeline + per-rep ownership |
+| [`loyalty`](./loyalty) | points & rewards | no-negative-balance + conservation oracle |
+| [`university`](./university) | course registration | seat capacity (atomic) + no double-enroll |
+| [`cards`](./cards) | "Majlis" — Estimation & Tarneeb, four players | fair on-chain shuffle via `raw_rand` |
+
+The full-stack apps share a small toolkit: a typed `EgyptBoundary` SDK wrapper, a
+passkey (Memphis) sign-in as web auth, and a shared `motoko/lib/` (an `Admin`
+owner/pause tier, plus `Users`/`Pagination`/`MemphisAuth` where used). Image bytes
+live in a separate Thebes **media contract** — the apps store only the path and
+fall back to a placeholder when no image is set.
 
 Every example here compiles in CI. `counter` and the `e-commerce` storefront are
 also **deployed and exercised live on the testnet** end-to-end with
 `thebes-deploy` — `increment`/`get` and `placeOrder`/`myOrders` both finalize
 through the validator quorum and read back from chain state.
 
-**Each example has its own README** with its full interface, a `thebes.toml` to
-deploy it, and how to connect to its API three ways — the `thebes-deploy` CLI,
-the `EgyptBoundary` JS SDK for frontends, and raw HTTP. Open any example folder
-above.
+**Each example has its own README** with its full interface and how to connect to
+its API three ways — the `thebes-deploy` CLI, the `EgyptBoundary` JS SDK for
+frontends, and raw HTTP. Open any example folder above.
 
-_More on the way: more full-stack apps (restaurant, CRM, ERP) with rich on-chain
-frontends matching the Thebes homepage._
-
-> **Authoring note (Thebes):** a private helper that `await`s another contract must
-> be **`async*`**, not `async` — `async*` inlines into the caller so its post-`await`
-> mutations commit correctly. (Plain `async` helpers are a known engine pitfall.)
+> **Authoring note (Thebes):** write a private helper that `await`s another
+> contract as **`async*`**, not `async` — `async*` inlines into the caller so its
+> post-`await` mutations commit correctly.
 
 ## Build one
 
