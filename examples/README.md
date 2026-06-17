@@ -41,6 +41,7 @@ sign-in and a real correctness guard — the kind a production app actually need
 | **Loyalty** | points & rewards | no-negative-balance + conservation oracle | [thebes-example-loyalty](https://github.com/Mercatura-Forum/thebes-example-loyalty) |
 | **University** | course registration | seat capacity (atomic) + no double-enroll | [thebes-example-university](https://github.com/Mercatura-Forum/thebes-example-university) |
 | **Cards** | "Majlis" — Estimation & Tarneeb, four players | fair on-chain shuffle via `raw_rand` | [thebes-example-cards](https://github.com/Mercatura-Forum/thebes-example-cards) |
+| **Invoicing** | invoices over the shared `Invoices` module (also embedded in Store & Restaurant) | on-chain-recomputed totals + guarded `draft→issued→paid`/`void` | [thebes-example-invoicing](https://github.com/Mercatura-Forum/thebes-example-invoicing) |
 
 The full-stack apps share one toolkit, depended on rather than copied:
 [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) for the frontend
