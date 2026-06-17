@@ -163,7 +163,7 @@ module {
     };
   };
 
-  /// Convenience: build a gate from a textual contract id (e.g. "kscn4-...").
+  /// Convenience: build a gate from a textual contract id (e.g. "aaaaa-aa").
   public func initFromText(memphisText : Text, origin : Text, version : Nat64) : State {
     init(Principal.fromText(memphisText), origin, version);
   };

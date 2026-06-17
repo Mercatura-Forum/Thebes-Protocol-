@@ -135,9 +135,9 @@ persistent actor ChatRoom {
     if (Principal.isAnonymous(msg.caller)) { Runtime.trap("Sign in to load demo data") };
     if (messages.size() > 0) { return false };
     let now = Time.now();
-    let p1 = Principal.fromText("cxa6p-xiaaa-aaaad-aczda-cai");
-    let p2 = Principal.fromText("cqby3-2qaaa-aaaad-aczdq-cai");
-    let p3 = Principal.fromText("p7teu-wyaaa-aaaab-afnvq-cai");
+    let p1 = Principal.fromText("ffs4v-6g6ae");
+    let p2 = Principal.fromText("wbwjw-qw6ai");
+    let p3 = Principal.fromText("y5v2x-vg6am");
     ignore Users.register(users, p1, "Layla", now);
     ignore Users.register(users, p2, "Omar", now);
     ignore Users.register(users, p3, "Yusuf", now);

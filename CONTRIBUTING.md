@@ -22,13 +22,13 @@ its clients.)
    `EgyptBoundary` JS SDK, and raw HTTP). Match the existing examples.
 3. List it in [`examples/README.md`](examples/README.md).
 
-### The one authoring rule that bites
+### An authoring rule worth knowing
 
 A private Motoko helper that `await`s another contract must be **`async*`**, not
 `async`. `async*` inlines into the caller so its post-`await` state mutations
-commit correctly; a plain `async` helper is a known engine pitfall (a write
-after the `await` can be dropped). If you see "succeeded but state didn't
-change," this is the first suspect.
+commit correctly; with a plain `async` helper, a write after the `await` can be
+dropped. If you see "succeeded but state didn't change," this is the first
+suspect.
 
 ## Build + check locally
 
@@ -63,5 +63,5 @@ that attribution intact when adding code that uses it.
 
 ## Authorship
 
-Commits and code headers are attributed to the **Menese DeFi Team**. Please
-don't add personal-name or AI co-author lines.
+Commits and code headers are attributed to the **Thebes Protocol contributors**.
+Please don't add personal-name or AI co-author lines.
