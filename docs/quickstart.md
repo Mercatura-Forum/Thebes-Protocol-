@@ -6,7 +6,7 @@ version of every step is in [deploying.md](deploying.md); this is the fast path.
 ## 1. Install the tool
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.3-thebes-deploy/install-thebes-deploy.sh | bash
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.4-thebes-deploy/install-thebes-deploy.sh | bash
 thebes-deploy setup     # checks moc, mops, cargo
 ```
 

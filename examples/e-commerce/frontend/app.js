@@ -499,7 +499,7 @@
             <p>Beautifully made objects for everyday life — all orders recorded on-chain.</p>
             <span class="sf-chain-pill">
               <span class="sf-chain-dot"></span>
-              Egypt L1 · on-chain orders
+              Thebes · on-chain orders
             </span>
           </div>
           <div id="sf-product-area">
@@ -551,7 +551,7 @@
         <div class="sf-success-sheet" id="sf-success">
           <div class="sf-success-icon">✅</div>
           <h2>Order placed!</h2>
-          <p>Your order has been recorded on Egypt L1. It will be there forever.</p>
+          <p>Your order has been recorded on Thebes. It will be there forever.</p>
           <div class="sf-success-meta">
             <span class="sf-success-tag" id="sf-success-detail">Order #0 · $0.00</span>
           </div>

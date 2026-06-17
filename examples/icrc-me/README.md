@@ -13,10 +13,7 @@ shield surface.
 
 ## Source
 
-The full ledger lives in its own repository:
-
-**→ [`github.com/Menese-Protocol/ICRC-ME`](https://github.com/Menese-Protocol/ICRC-ME)**
-
+The full ledger lives in its own repository —
 ~13 modules / ~4,300 lines, zero dead code: `IndexedLedger.mo` (the actor),
 `CBOR.mo`, `BlockLog.mo`, `RegionBTree.mo`, `MerkleMMR.mo`, `BTreeIndex.mo`,
 `Balances.mo`, `Allowances.mo`, `Archive.mo`, `BloomFilter.mo`, and the certified
