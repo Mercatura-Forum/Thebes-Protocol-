@@ -42,6 +42,7 @@ sign-in and a real correctness guard — the kind a production app actually need
 | **University** | course registration | seat capacity (atomic) + no double-enroll | [thebes-example-university](https://github.com/Mercatura-Forum/thebes-example-university) |
 | **Cards** | "Majlis" — Estimation & Tarneeb, four players | fair on-chain shuffle via `raw_rand` | [thebes-example-cards](https://github.com/Mercatura-Forum/thebes-example-cards) |
 | **Invoicing** | invoices over the shared `Invoices` module (also embedded in Store & Restaurant) | on-chain-recomputed totals + guarded `draft→issued→paid`/`void` | [thebes-example-invoicing](https://github.com/Mercatura-Forum/thebes-example-invoicing) |
+| **Medical imaging** | "Lumen" — X-ray studies (Patient→Study→Series→Image), images in the media contract | clinical RBAC + forward-only study lifecycle + immutable access log | [thebes-example-xray](https://github.com/Mercatura-Forum/thebes-example-xray) |
 
 The full-stack apps share one toolkit, depended on rather than copied:
 [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) for the frontend

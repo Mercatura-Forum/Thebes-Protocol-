@@ -144,9 +144,12 @@ For the past fifteen years, an application has been a program running on infrast
 ## Deploying to Thebes
 
 **New here?** The [quickstart](docs/quickstart.md) takes you from install to a
-live contract in five minutes. For the full reference see
-[docs/deploying.md](docs/deploying.md); for the protocol itself,
-[docs/spec.md](docs/spec.md); to contribute, [CONTRIBUTING.md](CONTRIBUTING.md).
+live contract in five minutes. For dependencies, API keys, and the credit-metered
+deploy path see [docs/cli-deploy.md](docs/cli-deploy.md); for the full reference,
+[docs/deploying.md](docs/deploying.md); for how the SDK, the Motoko library, and
+the example apps fit together, [docs/repository-map.md](docs/repository-map.md);
+for the protocol itself, [docs/spec.md](docs/spec.md); to contribute,
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their smart contracts, generates an ed25519 identity, runs one command. The tool compiles every smart contract the manifest declares — Motoko via `moc`; Rust via `cargo build --target wasm32-unknown-unknown --release` — signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
 
