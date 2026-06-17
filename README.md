@@ -34,7 +34,7 @@ Your **backend and your frontend both live on the chain**. No servers, no databa
 thebes-deploy deploy        # compiles, installs, uploads the frontend, prints the live URL
 ```
 
-- **Start from a working example →** [`examples/`](./examples) — counter, guestbook, to-do, key-value store, and full-stack apps (storefront, restaurant, CRM, ERP), each in **Motoko and Rust**, each compiled in CI.
+- **Start from a working example →** [`examples/`](./examples) — core contracts (counter, guestbook, to-do, key-value store) in **Motoko and Rust**, plus a catalog of full-stack application repositories (store, chat, finance, booking, restaurant, CRM, loyalty, university, and a card game), each built on the shared [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) and [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib).
 - **End-user identity is built in** — your users sign in with a **passkey** (Memphis): no wallets, no seed phrases, no extensions.
 - **One binary, no dependencies** — see [Deploying to Thebes](#deploying-to-thebes).
 
@@ -205,9 +205,15 @@ The verifier is active work — the chain already signs; the browser-side check 
 ## Status
 
 - **Testnet** — four-validator cluster live across the MENA region. Block production sub-second, state roots byte-identical across nodes, smart contract 100 serving the spec page and smart contract 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
-- **Signing subnet** — threshold ECDSA, Schnorr, and Ed25519 live. MAYO-2 threshold assembly deferred pending Silent-VOLE preprocess improvements; per-validator MAYO-2 signing is live and on the consensus critical path today.
+- **Signing subnet** — threshold ECDSA, Schnorr, and Ed25519 are live. Per-validator MAYO-2 post-quantum signing runs on the consensus critical path today; threshold MAYO-2 assembly is on the roadmap, built on Silent-VOLE preprocessing.
 - **Enterprise & finance subnets** — architecture live; first institutional deployments in procurement.
 - **Mainnet** — coordinated with the first institutional partners. Timeline disclosed to partners under NDA.
+
+---
+
+## Acknowledgements
+
+Thebes builds on the **canister model** of the [Internet Computer](https://internetcomputer.org), created by the [DFINITY Foundation](https://dfinity.org) — smart contracts as orthogonally-persistent actors, and the Motoko language built around it. Their work is excellent and directly inspired this stack. We are grateful to the DFINITY team and the wider Internet Computer community.
 
 ---
 
