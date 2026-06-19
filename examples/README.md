@@ -30,19 +30,24 @@ Each full-stack app is its own repository: a Motoko backend on
 on [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk), with passkey
 sign-in and a real correctness guard — the kind a production app actually needs.
 
-| Application | What it shows | The guard it demonstrates | Repository |
+**Every app below runs live on the public testnet — backend, frontend, and assets
+all served and settled by the validator set, with no server or database behind
+it.** Open the **▶ live** link to use one in your browser; **src** is its full
+source repository.
+
+| Application | What it shows | The guard it demonstrates | Live · Source |
 |---|---|---|---|
-| **Store** | storefront with on-chain product photos | atomic stock decrement | [thebes-example-store](https://github.com/Mercatura-Forum/thebes-example-store) |
-| **Chat** | social rooms — profiles, avatars, authenticated posts | append-only bounded log | [thebes-example-chat](https://github.com/Mercatura-Forum/thebes-example-chat) |
-| **Finance** | personal ledger — accounts, transactions, budgets | no-overdraft + balance oracle | [thebes-example-finance](https://github.com/Mercatura-Forum/thebes-example-finance) |
-| **Booking** | reservations — listings, time slots | no double-booking (atomic) | [thebes-example-booking](https://github.com/Mercatura-Forum/thebes-example-booking) |
-| **Restaurant** | menu + customer orders + kitchen queue | forward-only order lifecycle | [thebes-example-restaurant](https://github.com/Mercatura-Forum/thebes-example-restaurant) |
-| **CRM** | sales pipeline — contacts, deals, activity log | forward-only pipeline + per-rep ownership | [thebes-example-crm](https://github.com/Mercatura-Forum/thebes-example-crm) |
-| **Loyalty** | points & rewards | no-negative-balance + conservation oracle | [thebes-example-loyalty](https://github.com/Mercatura-Forum/thebes-example-loyalty) |
-| **University** | course registration | seat capacity (atomic) + no double-enroll | [thebes-example-university](https://github.com/Mercatura-Forum/thebes-example-university) |
-| **Cards** | "Majlis" — Estimation & Tarneeb, four players | fair on-chain shuffle via `raw_rand` | [thebes-example-cards](https://github.com/Mercatura-Forum/thebes-example-cards) |
-| **Invoicing** | invoices over the shared `Invoices` module (also embedded in Store & Restaurant) | on-chain-recomputed totals + guarded `draft→issued→paid`/`void` | [thebes-example-invoicing](https://github.com/Mercatura-Forum/thebes-example-invoicing) |
-| **Medical imaging** | "Lumen" — X-ray studies (Patient→Study→Series→Image), images in the media contract | clinical RBAC + forward-only study lifecycle + immutable access log | [thebes-example-xray](https://github.com/Mercatura-Forum/thebes-example-xray) |
+| **Store** | storefront with on-chain product photos | atomic stock decrement | [▶ live](https://memphis.mercaturaforum.com/_/raw/51076318797464/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-store) |
+| **Chat** | social rooms — profiles, avatars, authenticated posts | append-only bounded log | [▶ live](https://memphis.mercaturaforum.com/_/raw/237321029127473/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-chat) |
+| **Finance** | personal ledger — accounts, transactions, budgets | no-overdraft + balance oracle | [▶ live](https://memphis.mercaturaforum.com/_/raw/158652659186308/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-finance) |
+| **Booking** | reservations — listings, time slots | no double-booking (atomic) | [▶ live](https://memphis.mercaturaforum.com/_/raw/158022072660457/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-booking) |
+| **Restaurant** | menu + customer orders + kitchen queue | forward-only order lifecycle | [▶ live](https://memphis.mercaturaforum.com/_/raw/233620264074820/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-restaurant) |
+| **CRM** | sales pipeline — contacts, deals, activity log | forward-only pipeline + per-rep ownership | [▶ live](https://memphis.mercaturaforum.com/_/raw/125493048716471/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-crm) |
+| **Loyalty** | points & rewards | no-negative-balance + conservation oracle | [▶ live](https://memphis.mercaturaforum.com/_/raw/81072616225770/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-loyalty) |
+| **University** | course registration | seat capacity (atomic) + no double-enroll | [▶ live](https://memphis.mercaturaforum.com/_/raw/86951497883402/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-university) |
+| **Cards** | "Majlis" — Estimation & Tarneeb, four players | fair on-chain shuffle via `raw_rand` | [▶ live](https://memphis.mercaturaforum.com/_/raw/124261185404698/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-cards) |
+| **Invoicing** | invoices over the shared `Invoices` module (also embedded in Store & Restaurant) | on-chain-recomputed totals + guarded `draft→issued→paid`/`void` | [▶ live](https://memphis.mercaturaforum.com/_/raw/92538097706674/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-invoicing) |
+| **Medical imaging** | "Lumen" — X-ray studies (Patient→Study→Series→Image), images in the media contract | clinical RBAC + forward-only study lifecycle + immutable access log | [▶ live](https://memphis.mercaturaforum.com/_/raw/165411730041522/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-xray) |
 
 The full-stack apps share one toolkit, depended on rather than copied:
 [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) for the frontend
