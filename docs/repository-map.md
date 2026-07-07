@@ -12,7 +12,8 @@ repository is, and how an example is wired to the others.
 | **[Thebes-Protocol-](https://github.com/Mercatura-Forum/Thebes-Protocol-)** (this repo) | The project index: homepage, the [technical spec](spec.md), the [docs](.), and a set of small starter examples in `examples/` (counter, guestbook, todo, kv-store, e-commerce, icrc-me), each in Motoko **and** Rust. | Read it; clone a starter to learn the shape. |
 | **[thebes-sdk](https://github.com/Mercatura-Forum/thebes-sdk)** | The shared **frontend** toolkit, published as `@thebes/sdk`: the `boundary.js`/`passkey.js` browser runtimes, a typed query/update + media-upload layer, the React hooks (`useQuery` / `useUpdate` / `useMediaUpload`), and the `MemphisGate` passkey sign-in. | A frontend `npm` git dependency: `@thebes/sdk`. |
 | **[thebes-lib](https://github.com/Mercatura-Forum/thebes-lib)** | The shared **backend** Motoko library: `Admin` (ownership/roles), `Users` (profiles), `Pagination`, `MemphisAuth`, `Invoices`. | A Motoko `mops` GitHub dependency: `thebes-lib`. |
-| **thebes-example-\*** | One repository per full-stack example dapp — store, chat, crm, restaurant, finance, booking, loyalty, university, cards, invoicing, xray, … Each is a complete app you can clone and deploy. | Clone the one nearest your use case; read its `README`. |
+| **thebes-example-\*** | One repository per full-stack example dapp — store, chat, crm, restaurant, finance, booking, loyalty, university, cards, invoicing, xray, open-banking-iso20022. Each is a complete app you can clone and deploy. | Clone the one nearest your use case; read its `README`. |
+| **[digital-asset-exchange](https://github.com/Mercatura-Forum/digital-asset-exchange)** | A sovereign delivery-versus-payment exchange — cash, company shares, and land titles settling atomically on the same substrate. The largest worked application. | Read it; study `smart-contracts/` and `docs/`. |
 
 The full example catalog, with a one-line description and a link for each, is in
 [`examples/README.md`](../examples/README.md).
@@ -25,9 +26,9 @@ half copies the toolkit** — both resolve it as a pinned dependency:
 ```
 thebes-example-<name>/
 ├── frontend/        React + Vite + Tailwind
-│   └── depends on  @thebes/sdk        (npm git dep, pinned to a tag)
+│   └── depends on  @thebes/sdk        (vendored snapshot: frontend/vendor/@thebes/sdk)
 └── motoko/          a `persistent actor`
-    └── depends on  thebes-lib         (mops GitHub dep, pinned to a tag)
+    └── depends on  thebes-lib         (vendored snapshot: motoko/thebes-lib, local mops dep)
 ```
 
 ```
@@ -35,8 +36,8 @@ thebes-example-<name>/
         │  thebes-sdk             │        │  thebes-lib             │
         │  (@thebes/sdk, frontend)│        │  (Motoko backend lib)   │
         └───────────▲─────────────┘        └───────────▲─────────────┘
-                    │ npm git dep                      │ mops github dep
-                    │ (pinned tag)                     │ (pinned tag)
+                    │ vendored snapshot                │ vendored snapshot
+                    │ (frontend/vendor/)               │ (motoko/thebes-lib/)
         ┌───────────┴──────────────────────────────────┴─────────────┐
         │  thebes-example-<name>                                       │
         │    frontend/  ── query/update/media ──►  motoko/  (the app's │
@@ -48,10 +49,12 @@ thebes-example-<name>/
                                                        and routes calls
 ```
 
-**Why split it this way.** The toolkit lives in exactly one place. A fix or
-feature in `thebes-sdk` or `thebes-lib` lands once and every example picks it up
-by bumping a pinned tag — no copy drifts out of sync. An example repository stays
-small: it is *only* the application, plus two dependency lines.
+**Why split it this way.** The toolkit is *authored* in exactly one place — the
+two toolkit repositories. Each example vendors a snapshot of both, so cloning an
+example builds offline and self-contained, with no external pins to resolve. A
+fix or feature lands upstream in `thebes-sdk` / `thebes-lib` first, and the
+examples refresh their vendored snapshot from it — the upstream repos are always
+the source of truth, the snapshots are build artifacts of a release.
 
 ## Tracing a feature across the repositories
 
@@ -72,6 +75,7 @@ When you want to know "where does X live?", follow the dependency edges:
 
 - Improving an **example app** → change that example's `frontend/` or `motoko/`.
 - Improving something **shared** (a hook, a Motoko module) → change `thebes-sdk`
-  or `thebes-lib`, cut a new tag, then bump the pinned dependency in the examples
-  that should adopt it. Do **not** edit the copied dependency inside an example's
-  `node_modules/` or `.mops/`.
+  or `thebes-lib` upstream first, cut a tag, then refresh the vendored snapshot
+  (`frontend/vendor/@thebes/sdk`, `motoko/thebes-lib`) in the examples that should
+  adopt it. Do **not** patch a vendored snapshot directly — upstream is the single
+  source of truth.

@@ -48,13 +48,20 @@ source repository.
 | **Cards** | "Majlis" — Estimation & Tarneeb, four players | fair on-chain shuffle via `raw_rand` | [▶ live](https://memphis.mercaturaforum.com/_/raw/124261185404698/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-cards) |
 | **Invoicing** | invoices over the shared `Invoices` module (also embedded in Store & Restaurant) | on-chain-recomputed totals + guarded `draft→issued→paid`/`void` | [▶ live](https://memphis.mercaturaforum.com/_/raw/92538097706674/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-invoicing) |
 | **Medical imaging** | "Lumen" — X-ray studies (Patient→Study→Series→Image), images in the media contract | clinical RBAC + forward-only study lifecycle + immutable access log | [▶ live](https://memphis.mercaturaforum.com/_/raw/165411730041522/index.html) · [src](https://github.com/Mercatura-Forum/thebes-example-xray) |
+| **Open banking (ISO 20022)** | a message validation + audit hub for the ISO 20022 payment standard — capability metadata, hash-linked records, bounded reads (backend contract; no web frontend) | append-only audit trail + explicit standards discovery | [src](https://github.com/Mercatura-Forum/thebes-example-open-banking-iso20022) |
 
-The full-stack apps share one toolkit, depended on rather than copied:
+The full-stack apps share one toolkit:
 [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) for the frontend
 (boundary client, typed calls, React hooks, the Memphis passkey gate) and
 [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib) for the backend
-(`Admin`, `Users`, `Pagination`, `MemphisAuth`). Image bytes live in a separate
-Thebes **media contract**; apps store only the path.
+(`Admin`, `Users`, `Pagination`, `MemphisAuth`). Each app vendors a snapshot of
+both so the repository builds self-contained, with no external toolkit pins; the
+two toolkit repositories remain the single upstream source of truth. Image bytes
+live in a separate Thebes **media contract**; apps store only the path.
+
+Looking for something bigger? **[digital-asset-exchange](https://github.com/Mercatura-Forum/digital-asset-exchange)**
+is a sovereign delivery-versus-payment exchange — cash, company shares, and land
+titles settling in one indivisible step — built on the same substrate.
 
 > **Motoko tip:** a private helper that `await`s another contract should be
 > declared `async*`, not `async` — `async*` inlines into the caller so its

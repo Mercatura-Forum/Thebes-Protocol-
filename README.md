@@ -18,7 +18,7 @@ The links below are not websites; each is a smart contract on the Thebes Layer 1
 
 **→ [A live storefront](https://memphis.mercaturaforum.com/_/raw/61779479616533/index.html)** — the [`examples/e-commerce`](examples/e-commerce) app running on-chain: catalog, cart, and orders, all served and settled by the cluster
 
-**→ [Eleven full-stack apps, live](examples/README.md#full-stack-applications)** — store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, and medical imaging. Each is a React frontend and a Motoko backend served entirely on-chain — open any of them in your browser to see what full-stack hosting on Thebes looks like.
+**→ [Twelve full-stack apps, live](examples/README.md#full-stack-applications)** — store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, medical imaging, and ISO 20022 open banking. Each is served entirely on-chain — open any of them in your browser to see what full-stack hosting on Thebes looks like.
 
 The spec is the source of truth; everything below is a preview of what it contains.
 
@@ -36,7 +36,7 @@ Your **backend and your frontend both live on the chain**. No servers, no databa
 thebes-deploy deploy        # compiles, installs, uploads the frontend, prints the live URL
 ```
 
-- **Start from a working example →** [`examples/`](./examples) — core contracts (counter, guestbook, to-do, key-value store) in **Motoko and Rust**, plus a catalog of eleven full-stack application repositories (store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, and medical imaging) — **each one live on the testnet** and built on the shared [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) and [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib).
+- **Start from a working example →** [`examples/`](./examples) — core contracts (counter, guestbook, to-do, key-value store) in **Motoko and Rust**, plus a catalog of twelve full-stack application repositories (store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, medical imaging, and ISO 20022 open banking) — **each one live on the testnet** and built on the shared [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) and [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib).
 - **End-user identity is built in** — your users sign in with a **passkey** (Memphis): no wallets, no seed phrases, no extensions.
 - **One binary, no dependencies** — see [Deploying to Thebes](#deploying-to-thebes).
 
