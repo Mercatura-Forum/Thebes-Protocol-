@@ -16,7 +16,7 @@ The links below are not websites; each is a smart contract on the Thebes Layer 1
 
 **→ [The Thebes IDE](https://memphis.mercaturaforum.com/_/raw/129525575222700/index.html)** — write, compile, and deploy a smart contract from the browser
 
-**→ [A live storefront](https://memphis.mercaturaforum.com/_/raw/61779479616533/index.html)** — the [`examples/e-commerce`](examples/e-commerce) app running on-chain: catalog, cart, and orders, all served and settled by the cluster
+**→ [A live storefront](https://memphis.mercaturaforum.com/_/raw/231151000642772/index.html)** — "Souk", the [Store example](https://github.com/Mercatura-Forum/thebes-example-store) running on-chain: catalog, cart, and orders, all served and settled by the cluster
 
 **→ [Twelve full-stack apps, live](examples/README.md#full-stack-applications)** — store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, medical imaging, and ISO 20022 open banking. Each is served entirely on-chain — open any of them in your browser to see what full-stack hosting on Thebes looks like.
 
@@ -181,12 +181,12 @@ At the end of a successful deploy, the tool prints the URLs to visit. Frontend s
 ✓ deploy complete
 
 Frontends — open in a browser:
-  portal       cid 174832  https://memphis.mercaturaforum.com/_/raw/174832/index.html
-  marketing    cid 192201  https://memphis.mercaturaforum.com/_/raw/192201/index.html
+  portal       cid <cid-1>  https://memphis.mercaturaforum.com/_/raw/<cid-1>/index.html
+  marketing    cid <cid-2>  https://memphis.mercaturaforum.com/_/raw/<cid-2>/index.html
 
 Backends — call via `thebes-deploy call <name> <method>`:
-  ledger       cid 110447
-  applications cid 138992
+  ledger       cid <cid-3>
+  applications cid <cid-4>
 ```
 
 Full-stack development is supported end-to-end. A project's smart-contract backend and smart-contract frontend ship from one manifest; the manifest decides which smart contracts are backends and which are frontends; the deploy tool handles both, in order, in one command. For a worked walkthrough — manifest, build, deploy, and calling a live contract — see **[docs/deploying.md](docs/deploying.md)**.

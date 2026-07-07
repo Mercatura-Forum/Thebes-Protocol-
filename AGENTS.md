@@ -55,3 +55,9 @@ sign installs yourself (Path A) or use a credit-metered API key (Path B).
 - Backends expose `*OrTrap` twins of guarded methods; frontends call the
   `OrTrap` form so a rejected guard surfaces as a thrown reason.
 - Single records return as 0-or-1-element `vec record`, never bare options.
+- **Live demo links must be chain-verified before every docs commit.** Canister
+  ids retire on chain re-genesis, so any `…/_/raw/<cid>/…` URL in markdown is a
+  claim that must be re-proven: run `scripts/verify-live-links.sh` (200 + real
+  HTML, not a "canister not found" body) and fix or remove anything dead before
+  committing. Sample/illustrative CLI output uses `<cid>` placeholders, never
+  concrete ids that can rot into dead links.
