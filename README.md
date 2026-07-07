@@ -18,6 +18,8 @@ The links below are not websites; each is a smart contract on the Thebes Layer 1
 
 **→ [A live storefront](https://memphis.mercaturaforum.com/_/raw/61779479616533/index.html)** — the [`examples/e-commerce`](examples/e-commerce) app running on-chain: catalog, cart, and orders, all served and settled by the cluster
 
+**→ [Twelve full-stack apps, live](examples/README.md#full-stack-applications)** — store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, medical imaging, and ISO 20022 open banking. Each is served entirely on-chain — open any of them in your browser to see what full-stack hosting on Thebes looks like.
+
 The spec is the source of truth; everything below is a preview of what it contains.
 
 ---
@@ -34,7 +36,7 @@ Your **backend and your frontend both live on the chain**. No servers, no databa
 thebes-deploy deploy        # compiles, installs, uploads the frontend, prints the live URL
 ```
 
-- **Start from a working example →** [`examples/`](./examples) — counter, guestbook, to-do, key-value store, and full-stack apps (storefront, restaurant, CRM, ERP), each in **Motoko and Rust**, each compiled in CI.
+- **Start from a working example →** [`examples/`](./examples) — core contracts (counter, guestbook, to-do, key-value store) in **Motoko and Rust**, plus a catalog of twelve full-stack application repositories (store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, medical imaging, and ISO 20022 open banking) — **each one live on the testnet** and built on the shared [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) and [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib).
 - **End-user identity is built in** — your users sign in with a **passkey** (Memphis): no wallets, no seed phrases, no extensions.
 - **One binary, no dependencies** — see [Deploying to Thebes](#deploying-to-thebes).
 
@@ -144,9 +146,12 @@ For the past fifteen years, an application has been a program running on infrast
 ## Deploying to Thebes
 
 **New here?** The [quickstart](docs/quickstart.md) takes you from install to a
-live contract in five minutes. For the full reference see
-[docs/deploying.md](docs/deploying.md); for the protocol itself,
-[docs/spec.md](docs/spec.md); to contribute, [CONTRIBUTING.md](CONTRIBUTING.md).
+live contract in five minutes. For dependencies, API keys, and the credit-metered
+deploy path see [docs/cli-deploy.md](docs/cli-deploy.md); for the full reference,
+[docs/deploying.md](docs/deploying.md); for how the SDK, the Motoko library, and
+the example apps fit together, [docs/repository-map.md](docs/repository-map.md);
+for the protocol itself, [docs/spec.md](docs/spec.md); to contribute,
+[CONTRIBUTING.md](CONTRIBUTING.md).
 
 Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their smart contracts, generates an ed25519 identity, runs one command. The tool compiles every smart contract the manifest declares — Motoko via `moc`; Rust via `cargo build --target wasm32-unknown-unknown --release` — signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
 
@@ -205,9 +210,15 @@ The verifier is active work — the chain already signs; the browser-side check 
 ## Status
 
 - **Testnet** — four-validator cluster live across the MENA region. Block production sub-second, state roots byte-identical across nodes, smart contract 100 serving the spec page and smart contract 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
-- **Signing subnet** — threshold ECDSA, Schnorr, and Ed25519 live. MAYO-2 threshold assembly deferred pending Silent-VOLE preprocess improvements; per-validator MAYO-2 signing is live and on the consensus critical path today.
+- **Signing subnet** — threshold ECDSA, Schnorr, and Ed25519 are live. Per-validator MAYO-2 post-quantum signing runs on the consensus critical path today; threshold MAYO-2 assembly is on the roadmap, built on Silent-VOLE preprocessing.
 - **Enterprise & finance subnets** — architecture live; first institutional deployments in procurement.
 - **Mainnet** — coordinated with the first institutional partners. Timeline disclosed to partners under NDA.
+
+---
+
+## Acknowledgements
+
+Thebes builds on the **canister model** of the [Internet Computer](https://internetcomputer.org), created by the [DFINITY Foundation](https://dfinity.org) — smart contracts as orthogonally-persistent actors, and the Motoko language built around it. Their work is excellent and directly inspired this stack. We are grateful to the DFINITY team and the wider Internet Computer community.
 
 ---
 
