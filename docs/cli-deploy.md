@@ -157,7 +157,8 @@ thebes-deploy query my-app myRole            # → (vec { record { … = "owner"
 > **Install once per id.** The cluster refuses to re-install a wasm onto a cid
 > that already holds one. Deploy to a fresh id (`cid = "auto"`); to ship a new
 > version of a frontend's *assets* (same wasm), use `thebes-deploy deploy
-> --skip-install`.
+> --skip-install`. To ship a new version of a **backend** to the same id while
+> keeping its state, see [upgrading.md](upgrading.md).
 
 ---
 
