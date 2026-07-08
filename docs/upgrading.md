@@ -77,18 +77,27 @@ post_upgrade trapped: RTS error: Memory-incompatible program upgrade
 ```
 
 This is safe (§5 — the canister keeps running the *old* code and its state), but
-your new version won't land until you make the old state assignable to the new
-one. Two supported ways:
+your new version won't land until you tell the upgrade how to map the old state
+onto the new shape. The way to do that is a **migration function**.
 
-**A — a migration function.** Attach `with migration` to the actor; the function
-receives the old stable fields and returns the new ones. Keep it in its own module:
+> **A rename or a plain removal is not enough.** Renaming a persistent variable,
+> or deleting one, does **not** make an incompatible type upgrade succeed on its
+> own — `post_upgrade` still traps `Memory-incompatible`. Every variable whose
+> type changed (or that you want to drop) must be accounted for **in a `with
+> migration` function**. There is no "just rename it to reset it" shortcut.
+
+Attach `with migration` to the actor; the function receives the old stable fields
+and returns the new ones. Keep it in its own module:
 
 ```motoko
 // Migration.mo — v1 → v2
 import Map "mo:core/Map";
+import Nat "mo:core/Nat";
 module {
   type ItemV1 = { id : Nat; qty : Nat };
   type ItemV2 = { id : Nat; onHand : Nat; sold : Nat };
+
+  // Carry data forward: read old.items, return the new shape.
   public func run(old : { items : Map.Map<Nat, ItemV1> })
                      : { items : Map.Map<Nat, ItemV2> } {
     let items = Map.empty<Nat, ItemV2>();
@@ -107,24 +116,16 @@ import Migration "Migration";
 persistent actor MyApp { /* … new types … */ };
 ```
 
-Only the variables whose types changed appear in the migration's input/output;
+Only the variables whose types changed appear in the migration's input and output;
 every other persistent variable carries across untouched, matched by name.
 
-**B — drop-and-reinitialize (for state you're fine resetting).** Rename the
-persistent variable. EOP discards the removed name and initializes the new one
-from its initializer, while your other variables persist by name — no migration
-function needed:
-
-```motoko
-// before
-let orders = Map.empty<Nat, Order>();   // old, now type-incompatible
-// after — old `orders` data is dropped, `orders2` starts fresh; the rest persists
-let orders2 = Map.empty<Nat, Order>();
-```
-
-Use **A** to carry data forward; use **B** only for ephemeral/rebuildable state
-you explicitly want to reset. Document which one you chose and why, right at the
-variable — the next maintainer needs to know a rename was a deliberate reset.
+**Resetting instead of carrying forward.** If a changed variable holds ephemeral
+state you're fine discarding, still route it through the migration — read it in
+the input, and return a fresh value in the output (e.g. `Map.empty<…>()`). That
+explicitly hands the old bytes to the migration to drop, which is what avoids the
+trap; the empty result is the reset. Don't try to achieve the reset with a bare
+rename — see the note above. Document the reset right at the migration so the next
+maintainer knows it was deliberate.
 
 ---
 
@@ -166,7 +167,8 @@ methods answer. Then run the same two commands against the real id.
 ## 6. Checklist
 
 1. `moc --check` the new backend; `npm run build` the frontend.
-2. Changed a persistent type? Add a migration (§3) — or a deliberate rename.
+2. Changed a persistent type? Add a `with migration` function (§3) that maps
+   every changed variable — carry it forward, or read-and-return-empty to reset.
 3. Dry-run on a throwaway id: install old wasm → seed state →
    `__motoko_stabilize_before_upgrade` → `deploy --upgrade` → verify state + new methods.
 4. Backend: `call __motoko_stabilize_before_upgrade`, then `deploy <name> --upgrade`.
