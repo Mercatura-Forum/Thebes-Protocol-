@@ -15,7 +15,7 @@ Every command below is shown with the output it actually produces.
 
 | Tool | What it is | Check |
 | --- | --- | --- |
-| `thebes-deploy` | the deploy CLI | `thebes-deploy --help` |
+| `thebes-deploy` | the deploy CLI | `thebes-deploy --version` |
 | `moc` | the Motoko compiler | `moc --version` → `Motoko compiler …` |
 | `mops` | the Motoko package manager | `mops --version` |
 | Node 20+ | only if your contract ships a frontend | `node --version` |
@@ -23,7 +23,7 @@ Every command below is shown with the output it actually produces.
 Install the CLI:
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.9-thebes-deploy/install-thebes-deploy.sh | bash
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.10-thebes-deploy/install-thebes-deploy.sh | bash
 thebes-deploy setup
 ```
 
@@ -230,6 +230,7 @@ costs nothing. Re-check any time with `thebes-deploy credits`.
 | `thebes-deploy identity new <name>` | create a local signing key |
 | `thebes-deploy build` | compile every canister in the manifest |
 | `thebes-deploy deploy` | build + install + upload + verify (you sign) |
+| `thebes-deploy upgrade <name>` | ship a new version to the same cid, keeping its state |
 | `thebes-deploy login --api-key <tbk_…>` | store an API key for metered deploys |
 | `thebes-deploy credits` | show credit balance and deploys it buys |
 | `thebes-deploy deploy --metered` | deploy through the gateway, charged to credits |

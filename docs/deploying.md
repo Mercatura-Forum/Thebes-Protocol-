@@ -170,6 +170,7 @@ boundary then serves it at `/_/raw/<cid>/<path>`. To re-upload only the bundle
 | `thebes-deploy setup` | check the local toolchain |
 | `thebes-deploy build [name]` | compile contracts |
 | `thebes-deploy deploy [name]` | build + install + upload + verify |
+| `thebes-deploy upgrade [name]` | ship new code to the same cid, keeping its state |
 | `thebes-deploy call <name> <method> [--arg '(…)']` | update call |
 | `thebes-deploy query <name> <method> [--arg '(…)']` | query call |
 | `thebes-deploy status` | cluster + validator status |

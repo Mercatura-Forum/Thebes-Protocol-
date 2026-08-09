@@ -150,7 +150,7 @@ live contract in five minutes. For dependencies, API keys, and the credit-metere
 deploy path see [docs/cli-deploy.md](docs/cli-deploy.md); for the full reference,
 [docs/deploying.md](docs/deploying.md); for how the SDK, the Motoko library, and
 the example apps fit together, [docs/repository-map.md](docs/repository-map.md);
-for the protocol itself, [docs/spec.md](docs/spec.md); to contribute,
+for the protocol itself, [docs/spec.md](docs/spec.md); for a single authoritative rule sheet to keep beside you (or load into a coding agent), [SKILL.md](SKILL.md); to contribute,
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
 Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their smart contracts, generates an ed25519 identity, runs one command. The tool compiles every smart contract the manifest declares — Motoko via `moc`; Rust via `cargo build --target wasm32-unknown-unknown --release` — signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
@@ -158,7 +158,7 @@ Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; 
 Install:
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.9-thebes-deploy/install-thebes-deploy.sh | bash
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.10-thebes-deploy/install-thebes-deploy.sh | bash
 ```
 
 First-time setup:
@@ -202,7 +202,7 @@ The tool composes the substrate's three-phase chunked install with a smart-route
 
 The source is a standalone Rust workspace; eight crates under `tools/thebes-deploy`; eighty-two tests; no dependency on any internal substrate crate. The chain protocol the tool speaks to is public by being a wire format, and the tool is one of several possible clients.
 
-The current release is `v0.1.9-thebes-deploy`; the binary, the install script, and a source tarball are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). It adds `new` (whole-project scaffolding), `add auth` (Memphis passkey sign-in), and a persistence guard: an in-place upgrade of a module that keeps its state in main memory is refused before a byte is uploaded, rather than reported as a success that silently blanks the contract. Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
+The current release is `v0.1.10-thebes-deploy`; the binary, the install script, and a source tarball are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). It composes the Motoko build line from the manifest, refuses a module whose persistence model this platform cannot carry across an upgrade, and verifies stable-type compatibility before an in-place upgrade uploads anything. Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
 
 ---
 
