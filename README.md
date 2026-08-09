@@ -158,16 +158,23 @@ Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; 
 Install:
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.4-thebes-deploy/install-thebes-deploy.sh | bash
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.9-thebes-deploy/install-thebes-deploy.sh | bash
 ```
 
 First-time setup:
 
 ```sh
 thebes-deploy identity new alice          # generate an ed25519 identity
-thebes-deploy setup                       # check moc, mops, cargo, mo:core
-thebes-deploy init                        # scaffold a thebes.toml
+thebes-deploy setup                       # check moc, mops, cargo, node, mo:core
+thebes-deploy new my-app                  # scaffold a whole project (backend + optional frontend)
 ```
+
+`new` writes a project whose build flags already match this platform's
+persistence model; `thebes-deploy init` still scaffolds a bare `thebes.toml`
+into an existing directory if you'd rather wire it yourself. A Motoko contract
+must be compiled with `moc --legacy-persistence` — see
+[docs/upgrading.md](docs/upgrading.md) for why, and what the tool refuses if it
+isn't.
 
 Then one command compiles every smart contract the manifest declares, installs each on the cluster, uploads the frontend bundles, and verifies the result:
 
@@ -195,7 +202,7 @@ The tool composes the substrate's three-phase chunked install with a smart-route
 
 The source is a standalone Rust workspace; eight crates under `tools/thebes-deploy`; eighty-two tests; no dependency on any internal substrate crate. The chain protocol the tool speaks to is public by being a wire format, and the tool is one of several possible clients.
 
-The current release is `v0.1.4-thebes-deploy`; the binary, the install script, and a source tarball are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
+The current release is `v0.1.9-thebes-deploy`; the binary, the install script, and a source tarball are attached to the [release page](https://github.com/Mercatura-Forum/Thebes-Protocol-/releases). It adds `new` (whole-project scaffolding), `add auth` (Memphis passkey sign-in), and a persistence guard: an in-place upgrade of a module that keeps its state in main memory is refused before a byte is uploaded, rather than reported as a success that silently blanks the contract. Subsequent releases will track the substrate's wire-format additions and the toolchain's UX work.
 
 ---
 

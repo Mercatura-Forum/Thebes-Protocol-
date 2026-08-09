@@ -6,12 +6,17 @@ version of every step is in [deploying.md](deploying.md); this is the fast path.
 ## 1. Install the tool
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.4-thebes-deploy/install-thebes-deploy.sh | bash
-thebes-deploy setup     # checks moc, mops, cargo
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.9-thebes-deploy/install-thebes-deploy.sh | bash
+thebes-deploy setup     # checks moc, mops, cargo, node
 ```
 
 > If `moc --version` doesn't say **"Motoko compiler"**, you've got Qt's `moc` on
 > your PATH — point your build command at the real Motoko compiler.
+
+**In a hurry?** `thebes-deploy new my-app` scaffolds the whole thing — backend
+(Motoko or Rust), optional frontend, and a `thebes.toml` with ids already
+allocated and the correct build flags. The rest of this page is the same project
+written by hand, so you can see what each piece is.
 
 ## 2. Write a contract
 
@@ -48,11 +53,18 @@ type   = "backend-motoko"
 cid    = "auto"
 source = "main.mo"
 wasm   = "build/counter.wasm"
-build  = "moc -o build/counter.wasm main.mo"
+build  = "mkdir -p build && moc --legacy-persistence -o build/counter.wasm main.mo"
 ```
 
 (Get the validator endpoints + boundary for the network you're joining from
 whoever runs it.)
+
+> **`--legacy-persistence` is not optional.** It selects the persistence model
+> this platform implements — state in stable memory, carried across an upgrade.
+> Without it `moc` compiles for enhanced orthogonal persistence, which keeps
+> state in main memory; that installs and runs fine, but the first in-place
+> upgrade would come back blank, so `deploy --upgrade` refuses it. Full story:
+> [upgrading.md](upgrading.md).
 
 ## 4. Deploy
 

@@ -7,7 +7,8 @@ a **new version to the same id, keeping the state that's already there.** Your
 canister id doesn't change, so every link, every stored balance, and every row of
 history survives the deploy.
 
-Every command below is shown with the output it actually produces.
+Every command and every result below was measured on the live cluster. Where a
+claim rests on a specific run, the contract id is given so it can be re-checked.
 
 ---
 
@@ -25,69 +26,108 @@ thebes-deploy deploy <name> --upgrade
 ```
 
 `--upgrade` sends the chunked commit with `mode=Upgrade`, so the substrate
-dispatches the state-preserving `engine.upgrade_canister` path (which runs your
-contract's `post_upgrade` and **rolls back on any failure** — see §5). The id in
-your `thebes.toml` must be explicit (not `"auto"`) and must already hold a wasm.
+dispatches `engine.upgrade_canister`: it runs `canister_pre_upgrade`, carries the
+canister's **stable memory** to a fresh instance of the new module, and runs
+`canister_post_upgrade`. The id in your `thebes.toml` must be explicit (not
+`"auto"`) and must already hold a wasm.
+
+Main memory is **not** carried across, and there is no keep-vs-replace mode to
+ask for — the contract has exactly one shape. Everything in §2 follows from that.
 
 ---
 
-## 2. The step you cannot skip: stabilize first
+## 2. The persistence model your contract must be compiled for
 
-Motoko contracts on Thebes use **enhanced orthogonal persistence (EOP)**: your
-`stable`/`persistent` state lives in the main heap, and it is the heap — not a
-hand-written `stable var` blob — that carries your data. An upgrade transports
-*stable memory*, so **before** you upgrade you serialize the heap into stable
-memory with the compiler-provided entry point:
+Compile every Motoko contract with **`moc --legacy-persistence`**:
 
-```sh
-thebes-deploy call <name> __motoko_stabilize_before_upgrade
+```toml
+build = "mkdir -p build && moc --legacy-persistence $(mops sources) -o build/my-app.wasm main.mo"
 ```
 
-Then upgrade. `post_upgrade` reads the state back (destabilizes) on the new wasm:
+Legacy (classical) persistence keeps actor state in **stable memory**, which is
+exactly what the upgrade contract carries. `moc`'s *default* is enhanced
+orthogonal persistence (EOP), which keeps actor state in **main memory** and
+relies on the replica retaining it across an upgrade. This platform does not
+implement main-memory retention, so an EOP module is the wrong artifact for this
+target: it installs, it runs, it upgrades — and it comes back up blank.
 
-```sh
-thebes-deploy call   <name> __motoko_stabilize_before_upgrade
-thebes-deploy deploy <name> --upgrade
+Because that failure is silent, `thebes-deploy` reads the module's own bytes and
+**refuses the upgrade before uploading anything**:
+
+```
+refusing to upgrade canister <cid> in place: the new module uses Motoko main-memory
+persistence / EOP (memory64, exported as `mem`), and this platform's upgrade contract
+carries STABLE memory only (pre_upgrade → carry stable memory → fresh instance →
+post_upgrade). The upgrade would report success and leave the canister blank.
+  Evidence: read from the module's own bytes — export `mem` → memory64.
 ```
 
-```
-[call] ()
-  upgrade: 570093 bytes wasm → cid 21800575273018 (chunked)
-  ✓  module_hash=fb94…ad18 validator=http://NODE_A:18080 chunks=18 (…ms)
-✓ deploy complete
-```
+Measured, one contract per arm, same source, same tool, same day — the only
+variable is the compiler flag:
 
-Confirm the `module_hash` changed and read your state back with a query — the row
-counts, balances, or history that were there before the upgrade are still there.
+| Build | id | state before → after | new code ran? |
+|---|---|---|---|
+| `moc --legacy-persistence` | `50571071155301` | **3 → 3** | yes (`version` v1 → v2) |
+| `moc` (EOP), upgrade forced | `137619036531241` | **3 → 0** | yes (`version` v1 → v2) |
 
-> If you skip the stabilize step, a bare upgrade can carry an empty stable image
-> and your heap state is lost. Make `__motoko_stabilize_before_upgrade` the first
-> line of every upgrade script.
+Both arms shipped a module that answered from its new code, so "the upgrade ran"
+is not evidence that state survived. Read your state back.
+
+> **A note on the flag.** `moc` marks `--legacy-persistence` deprecated and says
+> it will be removed in a future compiler. We name it anyway because it is the
+> model this platform actually implements; when the substrate gains main-memory
+> retention, this guidance changes and the tool's guard changes with it.
 
 ---
 
-## 3. Migrations: when you change a persistent type
+## 3. Changing the type of a persistent variable
 
-If the new version changes the **type** of any persistent variable — adds a field
-to a stored record, changes a variant, renames a field — the destabilize on the
-new wasm can't map the old bytes onto the new shape, and `post_upgrade` traps:
+**Under legacy persistence a changed persistent type is discarded silently.**
+Nothing traps, nothing rolls back, and the upgrade reports success:
+
+```motoko
+// before: var count : Nat = 0;   (contract holds 3)
+// after:  var count : Text = "zero";
+```
+
+Measured on `50571071155301`: `get()` returned `3` before the upgrade and
+`"zero"` after — the initialiser value. The variable was dropped and re-created.
+Every *other* persistent variable carries across untouched, matched by name.
+
+This is the opposite of EOP's behaviour, where `post_upgrade` traps
+`Memory-incompatible program upgrade` and refuses to land until you write a
+migration. On this platform nothing forces you. **Check it yourself, every time.**
+
+### The check that catches it
+
+`moc` can emit a contract's stable-type signature and compare two of them:
+
+```sh
+moc --legacy-persistence --stable-types -o /tmp/new.wasm main.mo   # writes /tmp/new.most
+moc --stable-compatible old.most new.most                          # exit 0 = safe
+```
+
+An incompatible change fails loudly, with the remedy:
 
 ```
-post_upgrade trapped: RTS error: Memory-incompatible program upgrade
+Compatibility error [M0170], the new type of stable variable `count` is not
+compatible with the previous version.
+ The previous type
+  var Nat
+ is not a subtype of
+  var Text
 ```
 
-This is safe (§5 — the canister keeps running the *old* code and its state), but
-your new version won't land until you tell the upgrade how to map the old state
-onto the new shape. The way to do that is a **migration function**.
+Keep the `.most` file of whatever is currently deployed **in your repository**,
+next to the manifest. It is the only record of what the live contract's state
+looks like; the cluster does not serve the installed module's bytes back to you.
 
-> **A rename or a plain removal is not enough.** Renaming a persistent variable,
-> or deleting one, does **not** make an incompatible type upgrade succeed on its
-> own — `post_upgrade` still traps `Memory-incompatible`. Every variable whose
-> type changed (or that you want to drop) must be accounted for **in a `with
-> migration` function**. There is no "just rename it to reset it" shortcut.
+### Carrying the data forward instead: `with migration`
 
-Attach `with migration` to the actor; the function receives the old stable fields
-and returns the new ones. Keep it in its own module:
+A migration function maps the old persistent fields onto the new ones. It runs on
+this platform under legacy persistence — measured on `268607152579679`: a contract
+holding `count : Nat = 3` upgraded to a version declaring `count : Text`, with the
+migration below, came back reading `"3"`, not `"zero"`.
 
 ```motoko
 // Migration.mo — v1 → v2
@@ -121,15 +161,54 @@ every other persistent variable carries across untouched, matched by name.
 
 **Resetting instead of carrying forward.** If a changed variable holds ephemeral
 state you're fine discarding, still route it through the migration — read it in
-the input, and return a fresh value in the output (e.g. `Map.empty<…>()`). That
-explicitly hands the old bytes to the migration to drop, which is what avoids the
-trap; the empty result is the reset. Don't try to achieve the reset with a bare
-rename — see the note above. Document the reset right at the migration so the next
-maintainer knows it was deliberate.
+the input, and return a fresh value in the output (e.g. `Map.empty<…>()`). The
+reset then appears in your source, reviewable, instead of happening silently
+because two types drifted apart.
 
 ---
 
-## 4. Frontends: re-upload assets, keep the id
+## 4. Already live on an EOP module?
+
+A contract that is *already deployed* as an EOP module holds its state in a main
+memory the upgrade does not carry. Two paths work and one bricks the contract.
+
+**Keeps your state (measured).** Serialise the heap into stable memory first,
+using the entry point the EOP compiler provides, then force the upgrade:
+
+```sh
+thebes-deploy call   <name> __motoko_stabilize_before_upgrade
+thebes-deploy deploy <name> --upgrade --allow-state-loss
+```
+
+Measured on `271082849709232`: `3` before, `3` after. The red control — the same
+module hash, upgraded the same way but **without** the stabilize call
+(`137619036531241`) — read `0`. The stabilize call is the whole difference.
+
+> `--allow-state-loss` is required only because the guard reads the module's
+> bytes and cannot see that you stabilised. Its name describes the ordinary case,
+> not this one. Verify by reading your state back after the upgrade.
+
+**Bricks the contract — do not do this.** Rebuilding the same contract with
+`--legacy-persistence` and upgrading in place does **not** convert it. The legacy
+runtime cannot read the stable image EOP wrote:
+
+```
+post_upgrade trapped: canister trapped: higher stable memory version (expected 1..2)
+```
+
+Measured on `271082849709232`: after that trap, every subsequent call and query
+traps `internal error: unexpected state entering InQuery` / `InUpdate`, on **all
+four validators**, and stays that way. The contract is unrecoverable; the id is
+lost. (The reverse direction, legacy → EOP, fails the same way.)
+
+**The safe conversion** is not an in-place upgrade at all: query the state out of
+the running contract, install the `--legacy-persistence` build on a **fresh id**
+(`thebes-deploy fresh-cid <name>`), and import it. Ship state-holding contracts
+with a full-state export query from day one so this is always available.
+
+---
+
+## 5. Frontends: re-upload assets, keep the id
 
 A frontend's wasm is the generic asset canister — it rarely changes. To ship a new
 build you re-upload the **assets** to the same id, which is not an install and so
@@ -148,33 +227,38 @@ is unchanged.
 
 ---
 
-## 5. Rollback safety
+## 6. What a failed upgrade leaves behind
 
-`engine.upgrade_canister` is atomic: if `post_upgrade` traps for any reason (a
-type mismatch, a migration bug, a trap in your own upgrade hook), the cluster
-**rolls back** — the id keeps the previous wasm and the previous state, exactly as
-before the attempt. A failed upgrade never leaves a half-migrated or bricked
-contract. That makes it safe to test an upgrade against a live-shaped id: worst
-case, nothing changes.
+`engine.upgrade_canister` is designed to be atomic: if `post_upgrade` traps, the
+cluster rolls back and the id keeps the previous wasm and the previous state.
 
-The recommended loop before touching a production id: deploy the *old* wasm to a
-throwaway id, put representative state on it, run the exact
-stabilize → `--upgrade` sequence, and confirm the state survived and the new
-methods answer. Then run the same two commands against the real id.
+**That is not something to rely on.** The `post_upgrade` trap in §4 rolled the
+module back and still left the contract wedged — every query and update trapping
+`unexpected state entering InQuery`, identically on all four validators, with no
+recovery. A failed upgrade can cost you the id.
+
+So: **never rehearse an upgrade against a live id.** Deploy the *current* wasm to
+a throwaway id (`cid = "auto"`), put representative state on it, run the exact
+sequence you intend to run, and confirm the state survived and the new methods
+answer. Only then touch the real id.
 
 ---
 
-## 6. Checklist
+## 7. Checklist
 
-1. `moc --check` the new backend; `npm run build` the frontend.
-2. Changed a persistent type? Add a `with migration` function (§3) that maps
-   every changed variable — carry it forward, or read-and-return-empty to reset.
-3. Dry-run on a throwaway id: install old wasm → seed state →
-   `__motoko_stabilize_before_upgrade` → `deploy --upgrade` → verify state + new methods.
-4. Backend: `call __motoko_stabilize_before_upgrade`, then `deploy <name> --upgrade`.
-5. Frontend: `deploy web --skip-install` (inject backend id, bump version).
-6. Verify: `module_hash` changed, a query returns the pre-upgrade state, the new
-   surface answers.
+1. Build with `moc --legacy-persistence`. Confirm the deploy log prints
+   `persistence: Motoko stable-memory persistence (memory32, exported as 'mem')`.
+2. Changed a persistent type? `moc --stable-compatible <deployed>.most <new>.most`.
+   Non-zero exit means the variable will be **silently discarded** — write a
+   `with migration` function (§3), or accept the reset deliberately and in writing.
+3. Dry-run on a throwaway id: install the deployed wasm → seed state → upgrade →
+   verify state and new methods. Never rehearse on the live id (§6).
+4. Backend: `thebes-deploy deploy <name> --upgrade`.
+5. Frontend: `thebes-deploy deploy web --skip-install` (inject backend id, bump version).
+6. Verify: `module_hash` changed, **and** a query returns the pre-upgrade state.
+   A new `version()` answering proves only that new code ran — not that data survived.
+7. Commit the new `.most` alongside the release, so the next upgrade has something
+   to compare against.
 
 See [cli-deploy.md](cli-deploy.md) for first-install and the credit-metered path,
 and [deploying.md](deploying.md) for the full command reference.

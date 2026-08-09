@@ -31,7 +31,7 @@ type   = "backend-motoko"
 cid    = "auto"
 source = "motoko/main.mo"
 wasm   = "build/counter.wasm"
-build  = "moc -o build/counter.wasm motoko/main.mo"
+build  = "mkdir -p build && moc --legacy-persistence -o build/counter.wasm motoko/main.mo"
 ```
 
 ```sh

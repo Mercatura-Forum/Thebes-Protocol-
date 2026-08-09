@@ -20,7 +20,7 @@ type   = "backend-motoko"
 cid    = "auto"
 source = "motoko/main.mo"
 wasm   = "build/todo.wasm"
-build  = "moc -o build/todo.wasm motoko/main.mo"
+build  = "mkdir -p build && moc --legacy-persistence -o build/todo.wasm motoko/main.mo"
 ```
 
 ```sh

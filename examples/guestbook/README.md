@@ -19,7 +19,7 @@ type   = "backend-motoko"
 cid    = "auto"
 source = "motoko/main.mo"
 wasm   = "build/guestbook.wasm"
-build  = "moc -o build/guestbook.wasm motoko/main.mo"
+build  = "mkdir -p build && moc --legacy-persistence -o build/guestbook.wasm motoko/main.mo"
 ```
 
 ```sh

@@ -15,7 +15,7 @@ Every command below is shown with the output it actually produces.
 
 | Tool | What it is | Check |
 | --- | --- | --- |
-| `thebes-deploy` | the deploy CLI | `thebes-deploy --version` |
+| `thebes-deploy` | the deploy CLI | `thebes-deploy --help` |
 | `moc` | the Motoko compiler | `moc --version` → `Motoko compiler …` |
 | `mops` | the Motoko package manager | `mops --version` |
 | Node 20+ | only if your contract ships a frontend | `node --version` |
@@ -23,7 +23,7 @@ Every command below is shown with the output it actually produces.
 Install the CLI:
 
 ```sh
-curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.4-thebes-deploy/install-thebes-deploy.sh | bash
+curl -L https://github.com/Mercatura-Forum/Thebes-Protocol-/releases/download/v0.1.9-thebes-deploy/install-thebes-deploy.sh | bash
 thebes-deploy setup
 ```
 
@@ -103,8 +103,15 @@ type   = "backend-motoko"
 cid    = "auto"                       # the tool allocates one and writes it back
 source = "main.mo"
 wasm   = "build/my-app.wasm"
-build  = "mkdir -p build && moc --package core $(…) -o build/my-app.wasm main.mo"
+build  = "mkdir -p build && moc --legacy-persistence --package core $(…) -o build/my-app.wasm main.mo"
 ```
+
+**`--legacy-persistence` is required on every Motoko build line.** It picks the
+persistence model this platform implements: actor state lives in stable memory,
+which an in-place upgrade carries across. `moc`'s default — enhanced orthogonal
+persistence — keeps state in main memory, which the upgrade contract does not
+carry; such a module installs and runs, but `deploy --upgrade` refuses it rather
+than let it come back up blank. See [upgrading.md](upgrading.md).
 
 **A build-line detail that bites:** the compiler writes the wasm but does **not**
 create the output directory — `moc -o build/my-app.wasm …` fails with
@@ -114,7 +121,7 @@ create the output directory — `moc -o build/my-app.wasm …` fails with
 `thebes-lib`:
 
 ```
-build = "mkdir -p build && moc --package core .mops/core@<v>/src --package thebes-lib '.mops/_github/thebes-lib#<tag>/src' -o build/my-app.wasm main.mo"
+build = "mkdir -p build && moc --legacy-persistence --package core .mops/core@<v>/src --package thebes-lib '.mops/_github/thebes-lib#<tag>/src' -o build/my-app.wasm main.mo"
 ```
 
 ---
@@ -132,7 +139,7 @@ thebes-deploy deploy
 
 ```
 [deploy] my-app
-  build: `mkdir -p build && moc … -o build/my-app.wasm main.mo`
+  build: `mkdir -p build && moc --legacy-persistence … -o build/my-app.wasm main.mo`
   cid:   21800575273018 (auto-allocated; writing back to manifest)
   identity: me (principal=6e3e…02)
   install: 598925 bytes wasm → cid 21800575273018
@@ -217,7 +224,9 @@ costs nothing. Re-check any time with `thebes-deploy credits`.
 | Command | Does |
 | --- | --- |
 | `thebes-deploy setup` | check the local toolchain |
-| `thebes-deploy init` | scaffold a `thebes.toml` |
+| `thebes-deploy new <name>` | scaffold a whole project (backend + optional frontend + manifest) |
+| `thebes-deploy add auth` | add Memphis passkey sign-in to this project |
+| `thebes-deploy init` | scaffold a bare `thebes.toml` into an existing directory |
 | `thebes-deploy identity new <name>` | create a local signing key |
 | `thebes-deploy build` | compile every canister in the manifest |
 | `thebes-deploy deploy` | build + install + upload + verify (you sign) |

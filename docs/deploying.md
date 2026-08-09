@@ -67,7 +67,7 @@ type   = "backend-motoko"
 cid    = "auto"                      # the tool allocates one + writes it back here
 source = "main.mo"
 wasm   = "build/counter.wasm"
-build  = "moc -o build/counter.wasm main.mo"
+build  = "mkdir -p build && moc --legacy-persistence -o build/counter.wasm main.mo"
 ```
 
 The first deploy replaces `cid = "auto"` with the allocated id and writes it
@@ -99,7 +99,7 @@ A real backend deploy:
 
 ```
 [deploy] counter
-  build: `moc -o build/counter.wasm main.mo`
+  build: `mkdir -p build && moc --legacy-persistence -o build/counter.wasm main.mo`
   cid:   251811379359164 (auto-allocated; writing back to manifest)
   identity: my-id (principal=6e3e78…)
   install: 268278 bytes wasm → cid 251811379359164
@@ -164,7 +164,9 @@ boundary then serves it at `/_/raw/<cid>/<path>`. To re-upload only the bundle
 
 | Command | Does |
 |---|---|
-| `thebes-deploy init` | scaffold a `thebes.toml` |
+| `thebes-deploy new <name>` | scaffold a whole project: backend, optional frontend, wired manifest |
+| `thebes-deploy add auth` | add Memphis passkey sign-in to the project in this directory |
+| `thebes-deploy init` | scaffold a bare `thebes.toml` into an existing directory |
 | `thebes-deploy setup` | check the local toolchain |
 | `thebes-deploy build [name]` | compile contracts |
 | `thebes-deploy deploy [name]` | build + install + upload + verify |
@@ -173,5 +175,6 @@ boundary then serves it at `/_/raw/<cid>/<path>`. To re-upload only the bundle
 | `thebes-deploy status` | cluster + validator status |
 | `thebes-deploy verify <name>` | re-run post-install verification |
 | `thebes-deploy identity new <name>` | create a signing identity |
+| `thebes-deploy fresh-cid <name>` | re-allocate a contract's id in the manifest |
 
 Add `--no-facts` for clean CI output and `--json` for machine-readable results.
