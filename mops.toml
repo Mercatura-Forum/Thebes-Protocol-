@@ -2,6 +2,12 @@
 # `src/` module below is the source of truth, and `core` is the modern Motoko
 # base library the examples resolve. CI runs `mops install` + `moc $(mops
 # sources) --check`.
+#
+# `src/Http.mo` binds host functions that the Thebes compiler provides and the
+# upstream Motoko compiler does not, so it builds only with the `moc` that
+# ships with thebes-deploy. No moc version is pinned under `[toolchain]` for
+# exactly that reason: mops would resolve the pin to an upstream release, and
+# that compiler cannot build this package.
 [package]
 name = "thebes-outcalls"
 version = "0.1.0"
@@ -12,6 +18,3 @@ license = "Apache-2.0"
 
 [dependencies]
 core = "2.4.0"
-
-[toolchain]
-moc = "1.4.1"

@@ -36,8 +36,20 @@ jobs:
           MOC=/tmp/moc
           "$MOC" --version
           SRCS="$(mops sources)"
+          # Examples that bind Thebes host functions compile only with the moc
+          # that ships with thebes-deploy — the upstream compiler downloaded
+          # above has no such primitives, so checking them here would report a
+          # missing field rather than a real defect. They are named so the gap
+          # is visible instead of silent, and each is checked against the
+          # Thebes compiler as part of that toolchain's own release.
+          needs_thebes_moc=" examples/http-outcall/motoko/main.mo "
           fail=0
           for f in $(find examples -path '*/motoko/*.mo'); do
+            case "$needs_thebes_moc" in
+              *" $f "*)
+                echo "== skip $f — needs the Thebes compiler, not upstream moc =="
+                continue ;;
+            esac
             echo "== moc --check $f =="
             "$MOC" $SRCS --check "$f" || fail=1
           done
