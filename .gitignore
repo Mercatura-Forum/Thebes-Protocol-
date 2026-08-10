@@ -13,3 +13,11 @@ dist/
 **/dist/
 .vite/
 *.tsbuildinfo
+
+# Motoko build output
+build/
+**/build/
+
+# deploy state
+.thebes/
+**/.thebes/

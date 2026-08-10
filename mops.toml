@@ -1,4 +1,17 @@
-# Motoko package set for the examples. `core` is the modern Motoko base library.
-# CI resolves these with `mops install` + `moc $(mops sources) --check`.
+# This repository is importable as the `thebes-outcalls` Motoko package: the
+# `src/` module below is the source of truth, and `core` is the modern Motoko
+# base library the examples resolve. CI runs `mops install` + `moc $(mops
+# sources) --check`.
+[package]
+name = "thebes-outcalls"
+version = "0.1.0"
+description = "Outbound HTTPS from a Thebes smart contract — a typed Motoko surface over the substrate's HTTP-outcall host functions: per-call quorum, submit-then-poll across two messages, and hash-based response agreement with no transform callback."
+repository = "https://github.com/Mercatura-Forum/Thebes-Protocol-"
+keywords = ["thebes", "egypt-l1", "motoko", "http", "outcall"]
+license = "Apache-2.0"
+
 [dependencies]
 core = "2.4.0"
+
+[toolchain]
+moc = "1.4.1"
