@@ -1,0 +1,75 @@
+# Build the deploy CLI for every supported platform and attach it to a release.
+#
+# The CLI's source is published as a tarball asset on the release itself, so
+# this workflow builds from that asset rather than from this repository. That
+# keeps one source of truth: the bytes people build from are the bytes we
+# build from.
+#
+# Runs on demand against a tag, so a release can be re-armed with binaries
+# after the fact without re-cutting it.
+name: release-binaries
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to build and attach to (e.g. v0.1.10-thebes-deploy)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-14          # Apple silicon
+            asset: thebes-deploy-macos-arm64
+          - os: macos-13          # Intel
+            asset: thebes-deploy-macos-x86_64
+          - os: ubuntu-22.04
+            asset: thebes-deploy-linux-x86_64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Fetch the release's source tarball
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" \
+             --pattern '*-src.tar.gz' --dir .
+          tar xzf ./*-src.tar.gz
+          test -f thebes-deploy/Cargo.toml
+
+      - name: Build
+        run: cargo build --release --manifest-path thebes-deploy/Cargo.toml
+
+      - name: Check the binary runs and reports the tag's version
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          BIN=thebes-deploy/target/release/thebes-deploy
+          "$BIN" --version
+          # The tag carries the version: v0.1.10-thebes-deploy -> 0.1.10.
+          WANT="$(printf '%s' "$TAG" | sed -E 's/^v([0-9.]+)-.*/\1/')"
+          GOT="$("$BIN" --version | awk '{print $2}')"
+          [ "$WANT" = "$GOT" ] || {
+            echo "tag says $WANT, binary says $GOT"; exit 1;
+          }
+
+      - name: Upload to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+          ASSET: ${{ matrix.asset }}
+        run: |
+          set -euo pipefail
+          cp thebes-deploy/target/release/thebes-deploy "$ASSET"
+          shasum -a 256 "$ASSET" | tee "$ASSET.sha256"
+          gh release upload "$TAG" "$ASSET" "$ASSET.sha256" \
+             --repo "$GITHUB_REPOSITORY" --clobber
