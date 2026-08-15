@@ -22,6 +22,7 @@ The primitives — each written in **both Motoko and Rust** and compiled in CI
 | [`kv-store`](./kv-store) | set / get / delete / list keys | Motoko · Rust |
 | [`icrc-me`](./icrc-me) | **the Thebes token standard** — full ICRC-1/2/3/10 ledger | Motoko |
 | [`e-commerce`](./e-commerce) | a minimal single-file storefront — products, cart, orders | Motoko + vanilla JS |
+| [`price-oracle`](./price-oracle) | **HTTP outcalls** — a quorum-agreed feed + a survey reduced to a guarded median ([guide](../docs/http-outcalls.md)) | Motoko (Thebes compiler) |
 
 ## Full-stack applications
 

@@ -148,7 +148,9 @@ For the past fifteen years, an application has been a program running on infrast
 **New here?** The [quickstart](docs/quickstart.md) takes you from install to a
 live contract in five minutes. For dependencies, API keys, and the credit-metered
 deploy path see [docs/cli-deploy.md](docs/cli-deploy.md); for the full reference,
-[docs/deploying.md](docs/deploying.md); for how the SDK, the Motoko library, and
+[docs/deploying.md](docs/deploying.md); for fetching the open internet from a
+contract — quorum-agreed HTTP outcalls and multi-source surveys —
+[docs/http-outcalls.md](docs/http-outcalls.md); for how the SDK, the Motoko library, and
 the example apps fit together, [docs/repository-map.md](docs/repository-map.md);
 for the protocol itself, [docs/spec.md](docs/spec.md); for a single authoritative rule sheet to keep beside you (or load into a coding agent), [SKILL.md](SKILL.md); to contribute,
 [CONTRIBUTING.md](CONTRIBUTING.md).
