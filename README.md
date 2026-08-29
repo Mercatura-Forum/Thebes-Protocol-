@@ -8,11 +8,11 @@
 
 ## Live, on-chain
 
-The links below are not websites; each is a smart contract on the Thebes Layer 1 serving its own frontend. The HTML and JavaScript a browser loads are bytes committed into the chain's signed state. No web server, no content-delivery network, no hosting provider sits between the reader and the chain.
+Each link below is a smart contract on the Thebes Layer 1 serving its own frontend. The HTML and JavaScript a browser loads are bytes committed into the chain's signed state — no content-delivery network and no hosting provider holds a copy. The product site answers on its own domain; everything under `/_/raw/` is the contract addressed directly, with nothing in between.
 
-**→ [The homepage](https://memphis.mercaturaforum.com/_/raw/129525575222625/index.html)** — Thebes, served by its own smart contract on the cluster
+**→ [The Thebes site](https://thebesprotocol.com)** — Thebes Hosting: distributed cloud hosting for Egypt and the GCC, served from a contract on the cluster
 
-**→ [The technical specification](https://memphis.mercaturaforum.com/_/raw/129525575222625/spec.html)** — the source of truth, also served on-chain
+**→ [The technical specification](https://memphis.mercaturaforum.com/_/raw/129525575222625/spec.html)** — the source of truth, served on-chain ([condensed version in this repo](docs/spec.md))
 
 **→ [The Thebes IDE](https://memphis.mercaturaforum.com/_/raw/129525575222700/index.html)** — write, compile, and deploy a smart contract from the browser
 
