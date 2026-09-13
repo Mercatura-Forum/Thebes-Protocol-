@@ -50,7 +50,7 @@ by their signed-in passkey principal.
   checkout, MyOrders, all wired to the backend).
 - **3D flagship (approved, in build): "Order → Block forge"** — a scroll-scrubbed
   Three.js hero in the Thebes dark cyan→purple system: a product glyph flows into a
-  lattice, four validator node-lights sign it in lockstep (the BFT quorum), and it
+  lattice, the subnet's validator node-lights sign it in lockstep (the BFT quorum), and it
   crystallizes into a sealed block dropping into an append-only column — the checkout
   *is* consensus. Built under the hero3d discipline (build → rig → design-audit →
   look-review) before it ships.

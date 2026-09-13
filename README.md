@@ -218,7 +218,7 @@ The verifier is active work — the chain already signs; the browser-side check 
 
 ## Status
 
-- **Testnet** — four-validator cluster live across the MENA region. Block production sub-second, state roots byte-identical across nodes, smart contract 100 serving the spec page and smart contract 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
+- **Testnet** — a subnet live across the MENA region, its validators spread over diverse geographical locations with the specialisations above available. Block production sub-second, state roots byte-identical across nodes, smart contract 100 serving the spec page and smart contract 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
 - **Signing subnet** — threshold ECDSA, Schnorr, and Ed25519 are live. Per-validator MAYO-2 post-quantum signing runs on the consensus critical path today; threshold MAYO-2 assembly is on the roadmap, built on Silent-VOLE preprocessing.
 - **Enterprise & finance subnets** — architecture live; first institutional deployments in procurement.
 - **Mainnet** — coordinated with the first institutional partners. Timeline disclosed to partners under NDA.
