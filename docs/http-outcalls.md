@@ -2,7 +2,7 @@
 
 A Thebes smart contract can fetch any URL from the open internet, with the
 result agreed by the validator set and carried inside a finalized block. The
-outcall surfaces are **live on the Thebes production chain**.
+outcall surfaces are **live on the Thebes chain**.
 
 Written for Motoko (`import Http "mo:thebes/Http"`, shipped with the Thebes
 Motoko compiler in `thebes-base/`). Three ideas make this different from other
@@ -87,7 +87,7 @@ let all : [(Text, Text)] = Http.responseHeaders(h);     // (name, value), lowerc
 |---|---|
 | In flight per canister | **8** (`#tooManyInFlight` on the 9th). Per canister, not global — another canister's traffic never consumes your slots. |
 | `maxResponseBytes` | 1 ..= **2 MiB** (default 2 MiB); oversize → deterministic `#tooLarge`, quorum-agreed |
-| Quorum | 1 up to the validator count (4 on the production chain) |
+| Quorum | 1 up to the subnet's validator count |
 | Header name | ≤ 256 chars |
 | Response slots | Hold until `free(h)` — always free delivered responses you're done with |
 
@@ -181,7 +181,7 @@ count never completes** — no error, no timeout; it pends forever. Keep v1
 quorum ≤ validators − 1, or use `submitV2`, which completes at any quorum up
 to the validator count.
 
-## Checklist for a production-grade outcall consumer
+## Checklist for a dependable outcall consumer
 
 - [ ] `#bodyOnly` (or `#headers` naming exactly what you need) for any third-party API
 - [ ] Quorum chosen per call: 1–2 for advisory reads, 3–4 for anything funds touch

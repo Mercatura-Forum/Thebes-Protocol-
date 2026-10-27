@@ -36,7 +36,7 @@ Your **backend and your frontend both live on the chain**. No servers, no databa
 thebes-deploy deploy        # compiles, installs, uploads the frontend, prints the live URL
 ```
 
-- **Start from a working example →** [`examples/`](./examples) — core contracts (counter, guestbook, to-do, key-value store) in **Motoko and Rust**, plus a catalog of twelve full-stack application repositories (store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, medical imaging, and ISO 20022 open banking) — **each one live on the testnet** and built on the shared [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) and [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib).
+- **Start from a working example →** [`examples/`](./examples) — core contracts (counter, guestbook, to-do, key-value store) in **Motoko and Rust**, plus a catalog of twelve full-stack application repositories (store, chat, finance, booking, restaurant, CRM, loyalty, university, a card game, invoicing, medical imaging, and ISO 20022 open banking) — **each one live on the chain** and built on the shared [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk) and [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib).
 - **End-user identity is built in** — your users sign in with a **passkey** (Memphis): no wallets, no seed phrases, no extensions.
 - **One binary, no dependencies** — see [Deploying to Thebes](#deploying-to-thebes).
 
@@ -155,7 +155,7 @@ the example apps fit together, [docs/repository-map.md](docs/repository-map.md);
 for the protocol itself, [docs/spec.md](docs/spec.md); for a single authoritative rule sheet to keep beside you (or load into a coding agent), [SKILL.md](SKILL.md); to contribute,
 [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Anyone can deploy a smart contract to the testnet. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their smart contracts, generates an ed25519 identity, runs one command. The tool compiles every smart contract the manifest declares — Motoko via `moc`; Rust via `cargo build --target wasm32-unknown-unknown --release` — signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the testnet's boundary.
+Anyone can deploy a smart contract to the chain. The tool is `thebes-deploy`; one binary; no runtime dependencies beyond a working shell. The operator writes a `thebes.toml` describing their smart contracts, generates an ed25519 identity, runs one command. The tool compiles every smart contract the manifest declares — Motoko via `moc`; Rust via `cargo build --target wasm32-unknown-unknown --release` — signs the install envelopes, routes the chunks across the cluster's validators, uploads the frontend bundles, and verifies the result against the chain's boundary.
 
 Install:
 
@@ -218,10 +218,10 @@ The verifier is active work — the chain already signs; the browser-side check 
 
 ## Status
 
-- **Testnet** — a subnet live across the MENA region, its validators spread over diverse geographical locations with the specialisations above available. Block production sub-second, state roots byte-identical across nodes, smart contract 100 serving the spec page and smart contract 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
+- **Live today** — a subnet live across the MENA region, its validators spread over diverse geographical locations with the specialisations above available. Blocks produced in under a second, state roots byte-identical across nodes, smart contract 100 serving the spec page and smart contract 42 serving the announcement frontend; finalization sustained at ~14 blocks per second with retention-bounded memory growth.
 - **Signing subnet** — threshold ECDSA, Schnorr, and Ed25519 are live. Per-validator MAYO-2 post-quantum signing runs on the consensus critical path today; threshold MAYO-2 assembly is on the roadmap, built on Silent-VOLE preprocessing.
 - **Enterprise & finance subnets** — architecture live; first institutional deployments in procurement.
-- **Mainnet** — coordinated with the first institutional partners. Timeline disclosed to partners under NDA.
+- **Partner launch** — coordinated with the first institutional partners. Timeline disclosed to partners under NDA.
 
 ---
 
