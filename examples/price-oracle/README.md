@@ -1,7 +1,7 @@
 # price-oracle
 
 External readings a contract can trust, both shapes: a **quorum fetch** (one
-URL, two validators must agree byte-for-byte) cached with a known age, and a
+URL, a quorum of two must agree byte-for-byte) cached with a known age, and a
 **survey** (three sources fetched by different validators) reduced in the
 contract to a guarded median a single wrong source cannot steer. Written in
 **Motoko** on the `Http`, `HttpOracle`, and `HttpSurveyReduce` modules that

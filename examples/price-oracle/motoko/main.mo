@@ -2,7 +2,7 @@
 //
 // Two shapes of trust, both live on Thebes:
 //
-//   1. A QUORUM fetch: one URL, fetched independently by 2 validators that
+//   1. A QUORUM fetch: one URL, fetched independently by a quorum of 2 that
 //      must agree byte-for-byte on the body (`HttpOracle`, `#bodyOnly`).
 //   2. A SURVEY: three different sources fetched by different validators,
 //      reduced in this contract to a guarded median a single wrong source

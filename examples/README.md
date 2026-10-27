@@ -29,9 +29,9 @@ The primitives — each written in **both Motoko and Rust** and compiled in CI
 Each full-stack app is its own repository: a Motoko backend on
 [`thebes-lib`](https://github.com/Mercatura-Forum/thebes-lib) and a React frontend
 on [`@thebes/sdk`](https://github.com/Mercatura-Forum/thebes-sdk), with passkey
-sign-in and a real correctness guard — the kind a production app actually needs.
+sign-in and a real correctness guard — the kind a real app actually needs.
 
-**Every app below runs live on the public testnet — backend, frontend, and assets
+**Every app below runs live on the public Thebes chain — backend, frontend, and assets
 all served and settled by the validator set, with no server or database behind
 it.** Open the **▶ live** link to use one in your browser; **src** is its full
 source repository.
@@ -88,7 +88,7 @@ cargo build --target wasm32-unknown-unknown --release
 
 > Full walkthrough — manifest, build, deploy, calling a live contract: **[../docs/deploying.md](../docs/deploying.md)**.
 
-Deploy to the testnet with [`thebes-deploy`](../README.md): write a `thebes.toml`,
+Deploy to the chain with [`thebes-deploy`](../README.md): write a `thebes.toml`,
 generate an identity, run `thebes-deploy deploy`. The tool compiles the contract,
 signs the install, routes the chunks across the validators, and prints the live
 URL.

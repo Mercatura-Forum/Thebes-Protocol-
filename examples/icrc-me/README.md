@@ -1,6 +1,6 @@
 # ICRC-ME — the Thebes token standard (Motoko)
 
-**ICRC-ME** is Mercatura Forum's production token-ledger standard for Thebes,
+**ICRC-ME** is Mercatura Forum's full token-ledger standard for Thebes,
 written in Motoko. It implements the ICRC family end-to-end — **ICRC-1** (transfer
 + metadata), **ICRC-2** (approve / allowance / transfer-from), **ICRC-3** (the
 block log + transaction history), and **ICRC-10** (supported-standards discovery)
@@ -9,7 +9,7 @@ block log for `O(log n)` inclusion proofs, a certified tip, and an on-ledger
 shield surface.
 
 > Motoko only. ICRC-ME is the Thebes standard; the primitive `examples/token`
-> (Motoko + Rust) is the teaching version — ICRC-ME is the production one.
+> (Motoko + Rust) is the teaching version — ICRC-ME is the complete one.
 
 ## Source
 
